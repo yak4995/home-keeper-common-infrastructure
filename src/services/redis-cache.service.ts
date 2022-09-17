@@ -1,6 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { ICacheService } from '../interfaces/cache-service.interface';
+import { ICacheService } from '@yak4995/home-keeper-core';
 
 @Injectable()
 export class RedisCacheService implements ICacheService {
