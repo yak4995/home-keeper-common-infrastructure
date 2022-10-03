@@ -1,4 +1,6 @@
-import { Global, Module } from '@nestjs/common';
+import * as redisStore from 'cache-manager-redis-store';
+import { CacheModule, Global, Module } from '@nestjs/common';
+import { RedisCacheService } from 'services/redis-cache.service';
 import { OutputStreamLoggerService } from './services/output-stream-logger.service';
 
 // MIDDLEWARES
@@ -25,8 +27,16 @@ import { OutputStreamLoggerService } from './services/output-stream-logger.servi
 //   (transform possible throwing exception to correct response (http/rpc). Has 2 params: exception and argument host (superclass of execution context))
 @Global()
 @Module({
-  imports: [],
-  providers: [OutputStreamLoggerService],
-  exports: [OutputStreamLoggerService],
+  imports: [
+    CacheModule.register({
+      store: redisStore,
+
+      // Store-specific configuration:
+      host: 'localhost',
+      port: 6379,
+    }),
+  ],
+  providers: [OutputStreamLoggerService, RedisCacheService],
+  exports: [OutputStreamLoggerService, RedisCacheService],
 })
 export class CommonModule {}
