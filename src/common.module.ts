@@ -1,6 +1,6 @@
 import * as redisStore from 'cache-manager-redis-store';
 import { CacheModule, Global, Module } from '@nestjs/common';
-import { RedisCacheService } from 'services/redis-cache.service';
+import { RedisCacheService } from './services/redis-cache.service';
 import { OutputStreamLoggerService } from './services/output-stream-logger.service';
 
 // MIDDLEWARES
