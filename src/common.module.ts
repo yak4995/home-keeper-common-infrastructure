@@ -1,7 +1,26 @@
 import * as redisStore from 'cache-manager-redis-store';
+
 import { CacheModule, Global, Module } from '@nestjs/common';
+
+import { IConfigService } from '@yak4995/home-keeper-core';
+
 import { RedisCacheService } from './services/redis-cache.service';
 import { OutputStreamLoggerService } from './services/output-stream-logger.service';
+import { EnvConfigService } from './services/env-config.service';
+
+const reexportedModules = [
+  CacheModule.registerAsync({
+    useFactory: async () => {
+      const config: IConfigService = new EnvConfigService();
+      return {
+        store: redisStore,
+        // Store-specific configuration:
+        host: await config.getConfigValue('cacheUrl'),
+        port: await config.getConfigValue('cachePort'),
+      };
+    },
+  }),
+];
 
 // MIDDLEWARES
 //  (ONLY FOR HTTP/S: have access to request and response, support DI, can execute any code, change request/response, breack request lifecycle)
@@ -27,16 +46,8 @@ import { OutputStreamLoggerService } from './services/output-stream-logger.servi
 //   (transform possible throwing exception to correct response (http/rpc). Has 2 params: exception and argument host (superclass of execution context))
 @Global()
 @Module({
-  imports: [
-    CacheModule.register({
-      store: redisStore,
-
-      // Store-specific configuration:
-      host: 'localhost',
-      port: 6379,
-    }),
-  ],
+  imports: [...reexportedModules],
   providers: [OutputStreamLoggerService, RedisCacheService],
-  exports: [OutputStreamLoggerService, RedisCacheService],
+  exports: [OutputStreamLoggerService, ...reexportedModules, RedisCacheService],
 })
 export class CommonModule {}
