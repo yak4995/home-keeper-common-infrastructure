@@ -2,23 +2,19 @@ import * as redisStore from 'cache-manager-redis-store';
 
 import { CacheModule, Global, Module } from '@nestjs/common';
 
-import { IConfigService } from '@yak4995/home-keeper-core';
-
 import { RedisCacheService } from './services/redis-cache.service';
 import { OutputStreamLoggerService } from './services/output-stream-logger.service';
 import { EnvConfigService } from './services/env-config.service';
 
 const reexportedModules = [
   CacheModule.registerAsync({
-    useFactory: async () => {
-      const config: IConfigService = new EnvConfigService();
-      return {
-        store: redisStore,
-        // Store-specific configuration:
-        host: await config.getConfigValue('cacheUrl'),
-        port: await config.getConfigValue('cachePort'),
-      };
-    },
+    useFactory: async (config: EnvConfigService) => ({
+      store: redisStore,
+      // Store-specific configuration:
+      host: await config.getConfigValue('cacheUrl'),
+      port: await config.getConfigValue('cachePort'),
+    }),
+    inject: [EnvConfigService],
   }),
 ];
 
@@ -47,7 +43,12 @@ const reexportedModules = [
 @Global()
 @Module({
   imports: [...reexportedModules],
-  providers: [OutputStreamLoggerService, RedisCacheService],
-  exports: [OutputStreamLoggerService, ...reexportedModules, RedisCacheService],
+  providers: [OutputStreamLoggerService, RedisCacheService, EnvConfigService],
+  exports: [
+    OutputStreamLoggerService,
+    EnvConfigService,
+    ...reexportedModules,
+    RedisCacheService,
+  ],
 })
 export class CommonModule {}
