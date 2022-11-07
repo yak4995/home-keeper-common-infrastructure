@@ -16,19 +16,24 @@ export class LoggingInterceptor implements NestInterceptor {
     context: ExecutionContext,
     call$: CallHandler<any>,
   ): Observable<any> {
-    const data = context.switchToRpc().getData();
+    const inputData = context.switchToRpc().getData();
+    const { args = [null, null, 'Unknown path'] } = context
+      .switchToRpc()
+      .getContext();
     const now = Date.now();
 
-    OutputStreamLoggerService.log(`${data}; INPUT: ${JSON.stringify(data)}`);
+    OutputStreamLoggerService.log(
+      `PATH: ${args[2]}, INPUT: ${JSON.stringify(inputData)}`,
+    );
 
     return call$
       .handle()
       .pipe(
-        tap((data) => {
+        tap((outputData) => {
           OutputStreamLoggerService.log(
-            `${data}; OUTPUT: ${JSON.stringify(data)} DURATION: ${
-              Date.now() - now
-            }ms`,
+            `PATH: ${args[2]}, OUTPUT: ${JSON.stringify(
+              outputData,
+            )}, DURATION: ${Date.now() - now}ms`,
           );
         }),
       )

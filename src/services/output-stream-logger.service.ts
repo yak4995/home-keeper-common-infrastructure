@@ -16,7 +16,7 @@ export class OutputStreamLoggerService extends Logger {
         message,
         context,
         environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
-      }) + '\n',
+      }),
     );
   }
 
@@ -31,7 +31,7 @@ export class OutputStreamLoggerService extends Logger {
         trace,
         context,
         environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
-      }) + '\n',
+      }),
     );
   }
 }
