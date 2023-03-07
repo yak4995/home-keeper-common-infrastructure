@@ -13,31 +13,27 @@ export class RedisCacheService implements ICacheService {
     return this.cacheGateway.store.keys();
   }
 
-  async get<T>(
-    key: string,
-    fetchCallback: () => Promise<T>,
-    ttlInSeconds: number,
-  ): Promise<T> {
+  async get<T>(key: string, fetchCallback: () => Promise<T>): Promise<T> {
     const value: T = await this.cacheGateway.get(key);
     if (value) {
       return value;
     } else {
       const externalValue = await fetchCallback();
       if (externalValue) {
-        await this.cacheGateway.set(key, externalValue, ttlInSeconds);
+        await this.cacheGateway.set(key, externalValue);
         return externalValue;
       }
     }
   }
 
-  async set<T>(keys: string[], value: T, ttlInSeconds: number): Promise<T[]> {
+  async set<T>(keys: string[], value: T): Promise<T[]> {
     await this.clear(keys);
-    return Promise.all(
+    await Promise.all(
       keys.map(
-        (key: string): Promise<T> =>
-          this.cacheGateway.set(key, value, ttlInSeconds),
+        (key: string): Promise<void> => this.cacheGateway.set(key, value),
       ),
     );
+    return [value];
   }
 
   async clear(keys: string[]): Promise<boolean> {

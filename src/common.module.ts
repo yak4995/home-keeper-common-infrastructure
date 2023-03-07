@@ -1,4 +1,4 @@
-import * as redisStore from 'cache-manager-redis-store';
+import { redisStore } from 'cache-manager-redis-yet';
 
 import { CacheModule, Global, Module } from '@nestjs/common';
 
@@ -8,12 +8,19 @@ import { EnvConfigService } from './services/env-config.service';
 
 const reexportedModules = [
   CacheModule.registerAsync({
-    useFactory: async (config: EnvConfigService) => ({
-      store: redisStore,
-      // Store-specific configuration:
-      host: await config.getConfigValue('cacheUrl'),
-      port: await config.getConfigValue('cachePort'),
-    }),
+    useFactory: async (config: EnvConfigService) => {
+      const store = await redisStore({
+        socket: {
+          host: await config.getConfigValue('cacheUrl'),
+          port: await config.getConfigValue('cachePort'),
+        },
+        ttl: await config.getConfigValue('cacheTTL'),
+        // password: await config.getConfigValue('cachePassword'),
+      });
+      return {
+        store: () => store,
+      };
+    },
     inject: [EnvConfigService],
   }),
 ];

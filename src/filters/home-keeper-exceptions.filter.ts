@@ -9,16 +9,14 @@ export class HomeKeeperExceptionsFilter implements ExceptionFilter {
 
   catch(exception: Error | string): Observable<never> {
     if (exception instanceof Error && exception?.message && exception?.stack) {
-      /* eslint-disable @typescript-eslint/no-unused-vars */
-      const [_, rawErrorSrc] = exception.stack.split('at')[1];
+      const rawErrorSrc = exception.stack.split('at')[1];
       const errorSrc = rawErrorSrc.slice(0, rawErrorSrc.indexOf('\n'));
-      exception.message +=
-        ', source: ' + this.serviceName + ', file: ' + errorSrc;
+      exception.message += ' FROM: ' + this.serviceName + ', file: ' + errorSrc;
     } else {
       if (typeof exception === 'string') {
         exception = exception.replace(
-          ', source: ',
-          ', source: ' + this.serviceName + ', source: ',
+          ' FROM: ',
+          ' FROM: ' + this.serviceName + ' FROM: ',
         );
       }
     }
