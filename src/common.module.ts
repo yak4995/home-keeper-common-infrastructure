@@ -5,6 +5,7 @@ import { CacheModule, Global, Module } from '@nestjs/common';
 import { RedisCacheService } from './services/redis-cache.service';
 import { OutputStreamLoggerService } from './services/output-stream-logger.service';
 import { EnvConfigService } from './services/env-config.service';
+import { BusGateway } from './gateways/bus.gateway';
 
 const reexportedModules = [
   CacheModule.registerAsync({
@@ -50,12 +51,22 @@ const reexportedModules = [
 @Global()
 @Module({
   imports: [...reexportedModules],
-  providers: [OutputStreamLoggerService, RedisCacheService, EnvConfigService],
+  providers: [
+    OutputStreamLoggerService,
+    RedisCacheService,
+    EnvConfigService,
+    {
+      provide: 'ICacheService',
+      useClass: RedisCacheService,
+    },
+    BusGateway,
+  ],
   exports: [
     OutputStreamLoggerService,
     EnvConfigService,
     ...reexportedModules,
     RedisCacheService,
+    BusGateway,
   ],
 })
 export class CommonModule {}
