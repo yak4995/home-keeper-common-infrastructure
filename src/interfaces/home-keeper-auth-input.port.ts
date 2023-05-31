@@ -5,7 +5,7 @@ import { IRegistrationDto } from '../dto/registration.dto';
 
 export interface HomeKeeperAuthInputPort extends IAuthenticationService {
   signUp(authenticationData: IRegistrationDto): Promise<IUser>;
-  signIn(authenticationData: ILoginDto): Promise<string>;
+  signIn(authenticationData: ILoginDto): Promise<IUser>;
   signOut(token: string): Promise<boolean>;
   currentUser(userId: string): Promise<IUser>;
 
