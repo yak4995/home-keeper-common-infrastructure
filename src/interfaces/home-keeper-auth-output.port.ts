@@ -6,6 +6,6 @@ export interface HomeKeeperAuthOutputPort {
   signOut(output: boolean): Promise<any>;
   currentUser(output: IUser): Promise<any>;
 
-  validateUserByDecodedJWT(output: IUser): Promise<any>;
+  validateUserToken(output: IUser): Promise<any>;
   sendOtp(output: boolean): Promise<any>;
 }

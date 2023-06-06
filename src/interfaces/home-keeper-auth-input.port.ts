@@ -9,6 +9,6 @@ export interface HomeKeeperAuthInputPort extends IAuthenticationService {
   signOut(token: string): Promise<boolean>;
   currentUser(userId: string): Promise<IUser>;
 
-  validateUserByDecodedJWT(userId: string): Promise<IUser>;
+  validateUserToken(token: string): Promise<IUser>;
   sendOtp(email: string): Promise<boolean>;
 }
