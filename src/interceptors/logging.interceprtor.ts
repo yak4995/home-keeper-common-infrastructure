@@ -12,10 +12,10 @@ import { OutputStreamLoggerService } from '../services/output-stream-logger.serv
 export class LoggingInterceptor implements NestInterceptor {
   constructor(private readonly appName: string) {}
 
-  intercept(
+  intercept<T>(
     context: ExecutionContext,
-    call$: CallHandler<any>,
-  ): Observable<any> {
+    call$: CallHandler<T>,
+  ): Observable<T> {
     const inputData = context.switchToRpc().getData();
     const { args = [null, null, 'Unknown path'] } = context
       .switchToRpc()

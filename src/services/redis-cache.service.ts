@@ -39,7 +39,7 @@ export class RedisCacheService implements ICacheService {
   async clear(keys: string[]): Promise<boolean> {
     try {
       await Promise.all(
-        keys.map((key: string): Promise<any> => this.cacheGateway.del(key)),
+        keys.map((key: string): Promise<void> => this.cacheGateway.del(key)),
       );
       return true;
     } catch (e) {

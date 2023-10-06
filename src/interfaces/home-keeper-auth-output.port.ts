@@ -1,11 +1,29 @@
-import { IUser } from '@yak4995/home-keeper-core';
+import { HomeKeeperAuthInputPort } from './home-keeper-auth-input.port';
 
 export interface HomeKeeperAuthOutputPort {
-  signUp(output: IUser): Promise<any>;
-  signIn(output: IUser): Promise<any>;
-  signOut(output: boolean): Promise<any>;
-  currentUser(output: IUser): Promise<any>;
+  signUp<R>(
+    output: Awaited<ReturnType<HomeKeeperAuthInputPort['signUp']>>,
+    exception: unknown,
+  ): Promise<R>;
+  signIn<R>(
+    output: Awaited<ReturnType<HomeKeeperAuthInputPort['signIn']>>,
+    exception: unknown,
+  ): Promise<R>;
+  signOut<R>(
+    output: Awaited<ReturnType<HomeKeeperAuthInputPort['signOut']>>,
+    exception: unknown,
+  ): Promise<R>;
+  currentUser<R>(
+    output: Awaited<ReturnType<HomeKeeperAuthInputPort['currentUser']>>,
+    exception: unknown,
+  ): Promise<R>;
 
-  validateUserToken(output: IUser): Promise<any>;
-  sendOtp(output: boolean): Promise<any>;
+  validateUserToken<R>(
+    output: Awaited<ReturnType<HomeKeeperAuthInputPort['validateUserToken']>>,
+    exception: unknown,
+  ): Promise<R>;
+  sendOtp<R>(
+    output: Awaited<ReturnType<HomeKeeperAuthInputPort['sendOtp']>>,
+    exception: unknown,
+  ): Promise<R>;
 }

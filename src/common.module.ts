@@ -13,9 +13,9 @@ const reexportedModules = [
       const store = await redisStore({
         socket: {
           host: await config.getConfigValue('cacheUrl'),
-          port: await config.getConfigValue('cachePort'),
+          port: +(await config.getConfigValue('cachePort')),
         },
-        ttl: await config.getConfigValue('cacheTTL'),
+        ttl: +(await config.getConfigValue('cacheTTL')),
         // password: await config.getConfigValue('cachePassword'),
       });
       return {
