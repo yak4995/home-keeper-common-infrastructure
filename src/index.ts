@@ -4,6 +4,7 @@ export * from './enums/message-type.enum';
 
 export * from './dto/email.dto';
 export * from './dto/login.dto';
+export * from './dto/logout.dto';
 export * from './dto/registration.dto';
 
 export * from './filters/home-keeper-exceptions.filter';
