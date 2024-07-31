@@ -31,7 +31,7 @@ export class BusGateway {
     try {
       const response: TResult = await lastValueFrom(
         clientInstance
-          .send<TResult, TInput | any>(address, params ?? {})
+          .send<TResult, TInput | Record<string, never>>(address, params ?? {})
           .pipe(timeout(timeoutInSeconds ?? BusGateway.DEFAULT_TIMEOUT)),
       );
 
