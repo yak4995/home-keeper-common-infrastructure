@@ -1,26 +1,18 @@
 import {
+  CustomGeneralType,
   CustomRecord,
-  IAuthenticationService,
-  ID,
+  IIdentificationDto,
   InputPort,
-  IUser,
 } from '@yak4995/home-keeper-core';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HomeKeeperAuthInputPort
-  extends InputPort<
-      | 'signUp'
-      | 'signIn'
-      | 'signOut'
-      | 'currentUser'
-      | 'validateUserToken'
-      | 'sendOtp'
-    >,
-    IAuthenticationService<IUser> {
-  signUp(authenticationData: CustomRecord): Promise<IUser>;
-  signIn(authenticationData: CustomRecord): Promise<IUser>;
-  signOut(authenticationData: CustomRecord): Promise<boolean>;
-  currentUser(authenticationData: { id: ID }): Promise<IUser>;
+  extends InputPort<{
+    signUp: [CustomRecord, CustomGeneralType];
+    signIn: [CustomRecord, CustomGeneralType];
+    signOut: [CustomRecord, CustomGeneralType];
+    currentUser: [IIdentificationDto, CustomGeneralType];
 
-  validateUserToken(token: string): Promise<IUser>;
-  sendOtp(email: string): Promise<boolean>;
-}
+    validateUserToken: [{ token: string }, CustomGeneralType];
+    sendOtp: [{ email: string }, CustomGeneralType];
+  }> {}
