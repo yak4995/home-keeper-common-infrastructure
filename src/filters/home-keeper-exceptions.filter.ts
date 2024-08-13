@@ -3,6 +3,7 @@ import { Catch, ExceptionFilter } from '@nestjs/common';
 
 import { OutputStreamLoggerService } from '../services/output-stream-logger.service';
 
+// in all main.ts-s, except api-gateway
 @Catch()
 export class HomeKeeperExceptionsFilter implements ExceptionFilter {
   constructor(private readonly serviceName: string) {}
