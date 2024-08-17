@@ -1,11 +1,18 @@
 import { camelCase } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { ICacheService } from '@yak4995/home-keeper-core';
+import {
+  CustomGeneralType,
+  ICacheService,
+  SystemOpts,
+} from '@yak4995/home-keeper-core';
+
+import { TraceableError } from '../errors/traceable.error';
 
 @Injectable()
 export class BusGateway {
@@ -16,31 +23,43 @@ export class BusGateway {
 
   private static readonly DEFAULT_TIMEOUT = 5_000;
 
-  public async callServiceThroughtBus<TInput = any, TResult = any>(
+  public async callServiceThroughtBus<
+    TInput extends CustomGeneralType & SystemOpts,
+    TResult = CustomGeneralType,
+  >(
     address: string,
     params?: TInput,
     timeoutInSeconds?: number,
     fallbackKey?: string,
   ): Promise<TResult> {
+    if (!params || !params?.trace) {
+      params.trace = uuidv4();
+    }
     const [serviceName] = address.split('.');
     const clientInstance: ClientProxy = this[`${camelCase(serviceName)}Client`];
     if (!clientInstance) {
-      throw new Error('Incorrect request address');
+      throw new TraceableError(params.trace, 'Incorrect request address');
     }
 
     try {
       const response: TResult = await lastValueFrom(
         clientInstance
-          .send<TResult, TInput | Record<string, never>>(address, params ?? {})
+          .send<TResult, TInput>(address, params)
           .pipe(timeout(timeoutInSeconds ?? BusGateway.DEFAULT_TIMEOUT)),
       );
 
       if (fallbackKey) {
-        await this.fallbackProvider.set([fallbackKey], response);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { trace, ...result } = response as SystemOpts;
+        await this.fallbackProvider.set([fallbackKey], result);
       }
 
       return response;
     } catch (e) {
+      e = new TraceableError(
+        params.trace,
+        e instanceof Error ? e.message : (e as string),
+      );
       if (!fallbackKey) {
         throw e;
       }

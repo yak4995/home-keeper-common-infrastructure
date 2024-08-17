@@ -2,6 +2,8 @@ export * from './common.module';
 
 export * from './enums/message-type.enum';
 
+export * from './errors/traceable.error';
+
 export * from './dto/email.dto';
 export * from './dto/login.dto';
 export * from './dto/logout.dto';

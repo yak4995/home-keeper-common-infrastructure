@@ -16,7 +16,7 @@ export class LoggingInterceptor implements NestInterceptor {
     context: ExecutionContext,
     call$: CallHandler<T>,
   ): Observable<T> {
-    const inputData = context.switchToRpc().getData();
+    const { trace, ...inputData } = context.switchToRpc().getData();
     const { args = [null, null, 'Unknown path'] } = context
       .switchToRpc()
       .getContext();
@@ -24,6 +24,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     OutputStreamLoggerService.log(
       `PATH: ${args[2]}, INPUT: ${JSON.stringify(inputData)}`,
+      trace,
     );
 
     return call$
@@ -34,6 +35,7 @@ export class LoggingInterceptor implements NestInterceptor {
             `PATH: ${args[2]}, OUTPUT: ${JSON.stringify(
               outputData,
             )}, DURATION: ${Date.now() - now}ms`,
+            trace,
           );
         }),
       )

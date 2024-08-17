@@ -6,32 +6,44 @@ export class OutputStreamLoggerService extends Logger {
     super();
   }
 
-  public static log(message: string, context?: string): void {
+  public static log(message: string, trace?: string, context?: string): void {
     console.log(
-      JSON.stringify({
-        datetime:
-          new Date().toLocaleDateString('ua-UA') +
-          ' ' +
-          new Date().toLocaleTimeString('ua-UA'),
-        message,
-        context,
-        environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
-      }),
+      'TRACE: ' +
+        trace +
+        ' ' +
+        JSON.stringify({
+          datetime:
+            new Date().toLocaleDateString('ua-UA') +
+            ' ' +
+            new Date().toLocaleTimeString('ua-UA'),
+          message,
+          trace,
+          context,
+          environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
+        }),
     );
   }
 
-  public static error(message: string, trace?: string, context?: string): void {
+  public static error(
+    message: string,
+    trace?: string,
+    traceId?: string,
+    context?: string,
+  ): void {
     console.log(
-      JSON.stringify({
-        datetime:
-          new Date().toLocaleDateString('ua-UA') +
-          ' ' +
-          new Date().toLocaleTimeString('ua-UA'),
-        message,
-        trace,
-        context,
-        environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
-      }),
+      'TRACE: ' +
+        traceId +
+        ' ' +
+        JSON.stringify({
+          datetime:
+            new Date().toLocaleDateString('ua-UA') +
+            ' ' +
+            new Date().toLocaleTimeString('ua-UA'),
+          message,
+          trace,
+          context,
+          environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
+        }),
     );
   }
 }

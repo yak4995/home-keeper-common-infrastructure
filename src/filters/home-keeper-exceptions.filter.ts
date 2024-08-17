@@ -1,17 +1,19 @@
 import { Observable, throwError } from 'rxjs';
+
 import { Catch, ExceptionFilter } from '@nestjs/common';
 
 import { OutputStreamLoggerService } from '../services/output-stream-logger.service';
+import { TraceableError } from '../errors/traceable.error';
 
 // in all main.ts-s, except api-gateway
 @Catch()
 export class HomeKeeperExceptionsFilter implements ExceptionFilter {
   constructor(private readonly serviceName: string) {}
 
-  catch(exception: Error | string): Observable<never> {
+  catch(exception: TraceableError | string): Observable<never> {
     if (exception instanceof Error && exception?.message && exception?.stack) {
-      const rawErrorSrc = exception.stack.split('at')[1];
-      const errorSrc = rawErrorSrc.slice(0, rawErrorSrc.indexOf('\n'));
+      const rawErrorSrc = exception.stack.split(/\n\s*at/)[1];
+      const errorSrc = rawErrorSrc.slice(0, rawErrorSrc.indexOf(' ('));
       exception.message += ' FROM: ' + this.serviceName + ', file: ' + errorSrc;
     } else {
       if (typeof exception === 'string') {
@@ -25,6 +27,7 @@ export class HomeKeeperExceptionsFilter implements ExceptionFilter {
     OutputStreamLoggerService.error(
       exception instanceof Error ? exception.message : exception,
       (exception as Error)?.stack ?? null,
+      (exception as TraceableError)?.trace ?? null,
       'HomeKeeperExceptionsFilter.catch',
     );
 
