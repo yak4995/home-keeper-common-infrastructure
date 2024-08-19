@@ -1,9 +1,7 @@
-import { CustomRecord, SystemOpts } from '@yak4995/home-keeper-core';
-
 import { MessageType } from '../enums/message-type.enum';
 
-export interface IEmailDto extends SystemOpts {
+export interface IEmailDto {
   recieverEmail: string;
   messageTemplate: MessageType;
-  context: CustomRecord;
+  context: object;
 }

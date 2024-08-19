@@ -1,17 +1,13 @@
-import {
-  CustomGeneralType,
-  IUser,
-  OutputPort,
-} from '@yak4995/home-keeper-core';
+import { IUser, OutputPort } from '@yak4995/home-keeper-core';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HomeKeeperAuthOutputPort
   extends OutputPort<{
-    signUp: [Partial<IUser>, CustomGeneralType];
-    signIn: [IUser, CustomGeneralType];
-    signOut: [boolean, CustomGeneralType];
-    currentUser: [Partial<IUser>, CustomGeneralType];
+    signUp: [Partial<IUser>, object];
+    signIn: [IUser, object];
+    signOut: [{ result: boolean }, object];
+    currentUser: [Partial<IUser>, object];
 
-    validateUserToken: [IUser, CustomGeneralType];
-    sendOtp: [boolean, CustomGeneralType];
+    validateUserToken: [IUser, object];
+    sendOtp: [{ result: boolean }, object];
   }> {}

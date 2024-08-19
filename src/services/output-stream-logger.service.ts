@@ -26,13 +26,13 @@ export class OutputStreamLoggerService extends Logger {
 
   public static error(
     message: string,
+    stack?: string,
     trace?: string,
-    traceId?: string,
     context?: string,
   ): void {
     console.log(
       'TRACE: ' +
-        traceId +
+        trace +
         ' ' +
         JSON.stringify({
           datetime:
@@ -40,7 +40,7 @@ export class OutputStreamLoggerService extends Logger {
             ' ' +
             new Date().toLocaleTimeString('ua-UA'),
           message,
-          trace,
+          stack,
           context,
           environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
         }),

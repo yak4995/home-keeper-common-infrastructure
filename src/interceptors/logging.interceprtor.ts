@@ -7,6 +7,7 @@ import {
 import { Observable, tap, catchError } from 'rxjs';
 
 import { OutputStreamLoggerService } from '../services/output-stream-logger.service';
+import { SystemOpts } from '@yak4995/home-keeper-core';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -16,10 +17,12 @@ export class LoggingInterceptor implements NestInterceptor {
     context: ExecutionContext,
     call$: CallHandler<T>,
   ): Observable<T> {
-    const { trace, ...inputData } = context.switchToRpc().getData();
+    const { trace, ...inputData } = context
+      .switchToRpc()
+      .getData<object & SystemOpts>();
     const { args = [null, null, 'Unknown path'] } = context
       .switchToRpc()
-      .getContext();
+      .getContext<{ args: string | null }>();
     const now = Date.now();
 
     OutputStreamLoggerService.log(

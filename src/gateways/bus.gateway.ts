@@ -6,11 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import {
-  CustomGeneralType,
-  ICacheService,
-  SystemOpts,
-} from '@yak4995/home-keeper-core';
+import { ICacheService, SystemOpts } from '@yak4995/home-keeper-core';
 
 import { TraceableError } from '../errors/traceable.error';
 
@@ -24,8 +20,8 @@ export class BusGateway {
   private static readonly DEFAULT_TIMEOUT = 5_000;
 
   public async callServiceThroughtBus<
-    TInput extends CustomGeneralType & SystemOpts,
-    TResult = CustomGeneralType,
+    TInput extends object & SystemOpts,
+    TResult = object,
   >(
     address: string,
     params?: TInput,

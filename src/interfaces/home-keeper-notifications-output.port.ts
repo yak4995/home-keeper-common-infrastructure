@@ -1,9 +1,10 @@
-import {
-  CustomGeneralType,
-  NotificationsOutputPort,
-} from '@yak4995/home-keeper-core';
+import { NotificationsOutputPort, SystemOpts } from '@yak4995/home-keeper-core';
 
 export interface HomeKeeperNotificationsOutputPort
   extends NotificationsOutputPort {
-  sendEmail(output: boolean, exception: unknown): Promise<CustomGeneralType>;
+  sendEmail(
+    output: boolean,
+    exception: unknown,
+    opts: SystemOpts,
+  ): Promise<object>;
 }
