@@ -26,13 +26,19 @@ export class HomeKeeperExceptionsFilter implements ExceptionFilter {
 
     OutputStreamLoggerService.error(
       exception instanceof Error ? exception.message : exception,
-      (exception as Error)?.stack ?? null,
-      (exception as TraceableError)?.trace ?? null,
+      exception instanceof Error ? exception?.stack : null,
+      exception instanceof TraceableError ? exception?.trace : null,
       'HomeKeeperExceptionsFilter.catch',
     );
 
     return throwError(
-      () => '' + ((exception as Error)?.message ?? exception ?? ''),
+      () =>
+        '' +
+        (exception instanceof Error
+          ? exception?.message
+          : typeof exception === 'string'
+          ? exception
+          : ''),
     );
   }
 }

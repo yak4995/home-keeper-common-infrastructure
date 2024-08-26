@@ -45,17 +45,12 @@ export class BusGateway {
       );
 
       if (fallbackKey) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { trace, ...result } = response as SystemOpts;
-        await this.fallbackProvider.set([fallbackKey], result);
+        await this.fallbackProvider.set([fallbackKey], response);
       }
 
       return response;
     } catch (e) {
-      e = new TraceableError(
-        params.trace,
-        e instanceof Error ? e.message : (e as string),
-      );
+      e = new TraceableError(params.trace, e instanceof Error ? e.message : e);
       if (!fallbackKey) {
         throw e;
       }
