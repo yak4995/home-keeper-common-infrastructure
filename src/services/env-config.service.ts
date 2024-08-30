@@ -10,10 +10,7 @@ export class EnvConfigService implements IConfigService {
     dotenv.config();
   }
 
-  async getConfigValue<T>(
-    key: string,
-    outputTypeMapper: (arg: string) => T,
-  ): Promise<T> {
-    return outputTypeMapper(process.env[key] ?? null);
+  async getConfigValue(key: string): Promise<unknown> {
+    return process.env[key] ?? null;
   }
 }

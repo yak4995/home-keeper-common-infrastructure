@@ -13,10 +13,10 @@ const reexportedModules = [
     useFactory: async (config: EnvConfigService) => {
       const store = await redisStore({
         socket: {
-          host: await config.getConfigValue('cacheUrl', (arg) => arg),
-          port: +(await config.getConfigValue('cachePort', (arg) => arg)),
+          host: '' + (await config.getConfigValue('cacheUrl')),
+          port: +(await config.getConfigValue('cachePort')),
         },
-        ttl: +(await config.getConfigValue('cacheTTL', (arg) => arg)),
+        ttl: +(await config.getConfigValue('cacheTTL')),
         // password: await config.getConfigValue('cachePassword'),
       });
       return {
