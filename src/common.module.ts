@@ -1,4 +1,5 @@
 import { redisStore } from 'cache-manager-redis-yet';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { CacheModule, Global, Module } from '@nestjs/common';
 
@@ -24,6 +25,7 @@ const reexportedModules = [
     },
     inject: [EnvConfigService],
   }),
+  PrometheusModule.register(),
 ];
 
 // MIDDLEWARES
