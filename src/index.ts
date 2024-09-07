@@ -1,5 +1,7 @@
 export * from './common.module';
 
+export * from './decorators/attach-request-context.decorator';
+
 export * from './enums/message-type.enum';
 export * from './enums/message-method.enum';
 
@@ -19,6 +21,7 @@ export * from './interceptors/logging.interceprtor';
 export * from './interfaces/home-keeper-auth-input.port';
 export * from './interfaces/home-keeper-auth-output.port';
 
+export * from './services/async-context.service';
 export * from './services/redis-cache.service';
 export * from './services/output-stream-logger.service';
 export * from './services/env-config.service';

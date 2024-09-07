@@ -3,9 +3,11 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { CacheModule, Global, Module } from '@nestjs/common';
 
+import { AsyncContextService } from './services/async-context.service';
 import { RedisCacheService } from './services/redis-cache.service';
 import { OutputStreamLoggerService } from './services/output-stream-logger.service';
 import { EnvConfigService } from './services/env-config.service';
+
 import { BusGateway } from './gateways/bus.gateway';
 
 const reexportedModules = [
@@ -62,6 +64,7 @@ const reexportedModules = [
       useClass: RedisCacheService,
     },
     BusGateway,
+    AsyncContextService,
   ],
   exports: [
     OutputStreamLoggerService,
@@ -69,6 +72,7 @@ const reexportedModules = [
     ...reexportedModules,
     RedisCacheService,
     BusGateway,
+    AsyncContextService,
   ],
 })
 export class CommonModule {}

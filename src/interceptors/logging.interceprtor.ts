@@ -1,13 +1,14 @@
+import { Observable, tap, catchError } from 'rxjs';
 import {
   CallHandler,
   ExecutionContext,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Observable, tap, catchError } from 'rxjs';
+
+import { SystemOpts } from '@yak4995/home-keeper-core';
 
 import { OutputStreamLoggerService } from '../services/output-stream-logger.service';
-import { SystemOpts } from '@yak4995/home-keeper-core';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {

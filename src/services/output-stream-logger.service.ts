@@ -2,25 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class OutputStreamLoggerService extends Logger {
+  private static readonly environment: string =
+    process.env?.environment ?? 'production';
+
   constructor() {
     super();
   }
 
   public static log(message: string, trace?: string, context?: string): void {
     console.log(
-      'TRACE: ' +
-        trace +
-        ' ' +
-        JSON.stringify({
-          datetime:
-            new Date().toLocaleDateString('ua-UA') +
-            ' ' +
-            new Date().toLocaleTimeString('ua-UA'),
-          message,
-          trace,
-          context,
-          environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
-        }),
+      JSON.stringify({
+        message,
+        trace,
+        context,
+        environment: OutputStreamLoggerService.environment,
+      }),
     );
   }
 
@@ -31,19 +27,13 @@ export class OutputStreamLoggerService extends Logger {
     context?: string,
   ): void {
     console.log(
-      'TRACE: ' +
-        trace +
-        ' ' +
-        JSON.stringify({
-          datetime:
-            new Date().toLocaleDateString('ua-UA') +
-            ' ' +
-            new Date().toLocaleTimeString('ua-UA'),
-          message,
-          stack,
-          context,
-          environment: `${process.env.DEBUG_MODE === '1' ? 'DEV' : 'PROD'}`,
-        }),
+      JSON.stringify({
+        message,
+        trace,
+        stack,
+        context,
+        environment: OutputStreamLoggerService.environment,
+      }),
     );
   }
 }
