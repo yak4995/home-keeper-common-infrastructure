@@ -25,3 +25,5 @@ export * from './services/async-context.service';
 export * from './services/redis-cache.service';
 export * from './services/output-stream-logger.service';
 export * from './services/env-config.service';
+
+export * from './utils/persistance.utils';
