@@ -1,4 +1,5 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ICacheService } from '@yak4995/home-keeper-core';
 
@@ -42,7 +43,7 @@ export class RedisCacheService implements ICacheService {
         keys.map((key: string): Promise<void> => this.cacheGateway.del(key)),
       );
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   }
@@ -51,7 +52,7 @@ export class RedisCacheService implements ICacheService {
     try {
       await this.cacheGateway.reset();
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   }

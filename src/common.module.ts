@@ -1,7 +1,8 @@
-import { redisStore } from 'cache-manager-redis-yet';
+import { redisStore } from 'cache-manager-redis-store';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
-import { CacheModule, Global, Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { CacheModule, CacheStore } from '@nestjs/cache-manager';
 
 import { AsyncContextService } from './services/async-context.service';
 import { RedisCacheService } from './services/redis-cache.service';
@@ -13,16 +14,12 @@ import { BusGateway } from './gateways/bus.gateway';
 const reexportedModules = [
   CacheModule.registerAsync({
     useFactory: async (config: EnvConfigService) => {
-      const store = await redisStore({
-        socket: {
-          host: '' + (await config.getConfigValue('cacheUrl')),
-          port: +(await config.getConfigValue('cachePort')),
-        },
-        ttl: +(await config.getConfigValue('cacheTTL')),
-        // password: await config.getConfigValue('cachePassword'),
-      });
       return {
-        store: () => store,
+        store: (await redisStore({
+          url: `redis://${'' + (await config.getConfigValue('cacheUrl'))}:${+(await config.getConfigValue('cachePort'))}`,
+          ttl: +(await config.getConfigValue('cacheTTL')),
+        })) as unknown as CacheStore,
+        ttl: +(await config.getConfigValue('cacheTTL')),
       };
     },
     inject: [EnvConfigService],

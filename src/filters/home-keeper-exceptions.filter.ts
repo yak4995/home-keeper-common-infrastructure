@@ -37,8 +37,8 @@ export class HomeKeeperExceptionsFilter implements ExceptionFilter {
         (exception instanceof Error
           ? exception?.message
           : typeof exception === 'string'
-          ? exception
-          : ''),
+            ? exception
+            : ''),
     );
   }
 }

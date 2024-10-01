@@ -15,7 +15,6 @@ export function applyProjection<T extends IPersistantEntity>(
   }
   for (const key in value) {
     if (!projectionKeys.includes(key) || !projection[key]) {
-      console.log(key);
       delete value[key];
     }
   }
@@ -90,7 +89,7 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
 ): (keyof T)[] {
   const result = [];
   for (const key in projection) {
-    projection[key] && result.push(key);
+    if (projection[key]) result.push(key);
   }
   return result;
 }
