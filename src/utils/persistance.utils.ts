@@ -13,8 +13,14 @@ export function applyProjection<T extends IPersistantEntity>(
   if (projectionKeys.length === 0) {
     return value;
   }
+
+  const inclusiveProjection = Object.values(projection).includes(1);
+
   for (const key in value) {
-    if (!projectionKeys.includes(key) || !projection[key]) {
+    if (
+      (inclusiveProjection && !projectionKeys.includes(key)) ||
+      projection[key] === 0
+    ) {
       delete value[key];
     }
   }
@@ -29,10 +35,9 @@ export function buildCriteriaForMicroOrm<T extends IPersistantEntity>(
   for (const key in criteria) {
     const fieldCriteria = criteria[key as keyof T];
     if (fieldCriteria !== undefined) {
-      query[key] = buildFieldOperatorsForMicroOrm(fieldCriteria) as Record<
-        keyof T,
-        unknown
-      >;
+      query[key] = buildFieldOperatorsForMicroOrm(
+        fieldCriteria as FieldOperators<T>,
+      ) as Record<keyof T, unknown>;
     }
   }
 
@@ -48,6 +53,8 @@ export function buildFieldOperatorsForMicroOrm<T>(
     operatorEntries['$eq'] = operators.$eq;
   } else if ('$neq' in operators && operators.$neq !== undefined) {
     operatorEntries['$ne'] = operators.$neq;
+  } else if ('id' in operators) {
+    operatorEntries.id = operators.id['$eq'];
   } else {
     const comparisonOps = [
       '$in',
@@ -86,10 +93,42 @@ export function buildFieldOperatorsForMicroOrm<T>(
 
 export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
   projection: ProjectionCriteria<T>,
-): (keyof T)[] {
-  const result = [];
-  for (const key in projection) {
-    if (projection[key]) result.push(key);
+  populatedFields: (keyof T)[],
+  outsideFields: (keyof T)[],
+): { fields: (keyof T)[]; populate: (keyof T)[] } {
+  let fields: (keyof T)[] = undefined;
+  let populate: (keyof T)[] = undefined;
+
+  const exclusiveProjection = Object.values(projection).includes(0);
+
+  if (exclusiveProjection) {
+    populate = [...populatedFields];
+    for (const key in projection) {
+      if (projection[key] === 0 && populatedFields.includes(key)) {
+        populate.splice(
+          populate.findIndex((p) => key === p),
+          1,
+        );
+      }
+    }
+    return { fields, populate };
   }
-  return result;
+
+  for (const key in projection) {
+    if (projection[key] === 1) {
+      if (populatedFields.includes(key)) {
+        if (!outsideFields.includes(key)) {
+          if (!populate) populate = [];
+          populate.push(key);
+        }
+      } else {
+        if (!outsideFields.includes(key)) {
+          if (!fields) fields = [];
+          fields.push(key);
+        }
+      }
+    }
+  }
+
+  return { fields, populate };
 }

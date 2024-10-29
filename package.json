@@ -1,6 +1,6 @@
 {
   "name": "@yak4995/home-keeper-common-infrastructure",
-  "version": "0.0.100",
+  "version": "0.0.109",
   "description": "Lib what define basic infrastructure for home keeper services",
   "author": "Kryvokhyzha Yurii yak4995@gmail.com",
   "main": "lib/index.js",
@@ -30,7 +30,7 @@
     "@nestjs/microservices": "^10.4.4",
     "@nestjs/platform-express": "^10.0.0",
     "@willsoto/nestjs-prometheus": "^6.0.1",
-    "@yak4995/home-keeper-core": "^0.0.62",
+    "@yak4995/home-keeper-core": "^0.0.69",
     "cache-manager": "^5.7.6",
     "cache-manager-redis-store": "^3.0.1",
     "dotenv": "^16.4.5",

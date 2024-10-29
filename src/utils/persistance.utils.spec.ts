@@ -1,7 +1,10 @@
-import { ID } from '@yak4995/home-keeper-core';
+import { ID, IHousehold, ITimezone } from '@yak4995/home-keeper-core';
+
 import {
+  applyProjection,
   buildCriteriaForMicroOrm,
   buildFieldOperatorsForMicroOrm,
+  buildProjectionForMicroOrm,
 } from './persistance.utils';
 
 describe('buildFieldOperatorsForMicroOrm', () => {
@@ -67,9 +70,11 @@ describe('buildCriteriaForMicroOrm', () => {
         updatedAt: Date;
         name: string;
         age: number;
+        tz: ITimezone;
       }>({
         name: { $regex: /test/g },
         age: { $gte: 18, $lte: 60 },
+        tz: { id: { $eq: 'some-id' } },
       }),
     ).toStrictEqual({
       age: {
@@ -79,6 +84,145 @@ describe('buildCriteriaForMicroOrm', () => {
       name: {
         $re: /test/g,
       },
+      tz: { id: 'some-id' },
+    });
+  });
+});
+
+describe('buildProjectionForMicroOrm', () => {
+  it('all fields are empty', () => {
+    expect(
+      buildProjectionForMicroOrm<IHousehold>(
+        {},
+        [
+          'accounts',
+          'budgets',
+          'invitations',
+          'members',
+          'transactionCategories',
+        ],
+        [],
+      ),
+    ).toStrictEqual({ fields: undefined, populate: undefined });
+  });
+
+  it('all fields are set to 0 and no ones are in populate', () => {
+    expect(
+      buildProjectionForMicroOrm<IHousehold>(
+        { isOwn: 0, name: 0 },
+        [
+          'accounts',
+          'budgets',
+          'invitations',
+          'members',
+          'transactionCategories',
+        ],
+        [],
+      ),
+    ).toStrictEqual({
+      fields: undefined,
+      populate: [
+        'accounts',
+        'budgets',
+        'invitations',
+        'members',
+        'transactionCategories',
+      ],
+    });
+  });
+
+  it('all fields are set to 0 and some ones are in populate', () => {
+    expect(
+      buildProjectionForMicroOrm<IHousehold>(
+        { isOwn: 0, name: 0, accounts: 0, budgets: 0 },
+        ['invitations', 'members', 'transactionCategories'],
+        [],
+      ),
+    ).toStrictEqual({
+      fields: undefined,
+      populate: ['invitations', 'members', 'transactionCategories'],
+    });
+  });
+
+  it('all fields are set to 1', () => {
+    expect(
+      buildProjectionForMicroOrm<IHousehold>(
+        { isOwn: 1, name: 1, accounts: 1, budgets: 1 },
+        [
+          'accounts',
+          'budgets',
+          'invitations',
+          'members',
+          'transactionCategories',
+        ],
+        [],
+      ),
+    ).toStrictEqual({
+      fields: ['isOwn', 'name'],
+      populate: ['accounts', 'budgets'],
+    });
+  });
+
+  it('fields are set to 0 and 1 both', () => {
+    expect(
+      buildProjectionForMicroOrm<IHousehold>(
+        { isOwn: 0, name: 1, accounts: 0, budgets: 1 },
+        [
+          'accounts',
+          'budgets',
+          'invitations',
+          'members',
+          'transactionCategories',
+        ],
+        [],
+      ),
+    ).toStrictEqual({
+      fields: undefined,
+      populate: ['budgets', 'invitations', 'members', 'transactionCategories'],
+    });
+  });
+});
+
+describe('applyProjection', () => {
+  it('with empty projection', () => {
+    expect(
+      applyProjection<IHousehold>({}, {
+        name: 'test',
+        isOwn: false,
+        members: [],
+      } as IHousehold),
+    ).toStrictEqual({ name: 'test', isOwn: false, members: [] });
+  });
+
+  it('with all fields are 0', () => {
+    expect(
+      applyProjection<IHousehold>({ name: 0, members: 0 }, {
+        name: 'test',
+        isOwn: false,
+        members: [],
+      } as IHousehold),
+    ).toStrictEqual({ isOwn: false });
+  });
+
+  it('with all fields are 1', () => {
+    expect(
+      applyProjection<IHousehold>({ name: 1, members: 1 }, {
+        name: 'test',
+        isOwn: false,
+        members: [],
+      } as IHousehold),
+    ).toStrictEqual({ name: 'test', members: [] });
+  });
+
+  it('with fields are 0 and 1 both', () => {
+    expect(
+      applyProjection<IHousehold>({ name: 0, members: 1 }, {
+        name: 'test',
+        isOwn: false,
+        members: [],
+      } as IHousehold),
+    ).toStrictEqual({
+      members: [],
     });
   });
 });
