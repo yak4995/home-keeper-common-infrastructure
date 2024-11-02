@@ -50,7 +50,11 @@ export class BusGateway {
 
       return response;
     } catch (e) {
-      e = new TraceableError(params.trace, e instanceof Error ? e.message : e);
+      e = new TraceableError(
+        params.trace,
+        e instanceof Error ? e.message : e,
+        e instanceof Error ? e.stack : undefined,
+      );
       if (!fallbackKey) {
         throw e;
       }
