@@ -3,13 +3,21 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { Global, Module } from '@nestjs/common';
 import { CacheModule, CacheStore } from '@nestjs/cache-manager';
+import { ClientsModule } from '@nestjs/microservices';
 
 import { AsyncContextService } from './services/async-context.service';
 import { RedisCacheService } from './services/redis-cache.service';
 import { OutputStreamLoggerService } from './services/output-stream-logger.service';
 import { EnvConfigService } from './services/env-config.service';
 
+import { busConfigOptions } from './gateways/bus-config.options';
 import { BusGateway } from './gateways/bus.gateway';
+import { HomeKeeperServiceGateway } from './gateways/home-keeper-service.gateway';
+
+import { NotificationsFacade } from './facades/notifications.facade';
+import { SystemManagementFacade } from './facades/system-management.facade';
+import { UserFacade } from './facades/user.facade';
+import { HouseholdFacade } from './facades/household.facade';
 
 const reexportedModules = [
   CacheModule.registerAsync({
@@ -25,6 +33,34 @@ const reexportedModules = [
     inject: [EnvConfigService],
   }),
   PrometheusModule.register(),
+  ClientsModule.registerAsync(busConfigOptions),
+];
+
+const exportedProviders = [
+  OutputStreamLoggerService,
+  EnvConfigService,
+  RedisCacheService,
+  BusGateway,
+  HomeKeeperServiceGateway,
+  AsyncContextService,
+  {
+    provide: 'ICacheService',
+    useClass: RedisCacheService,
+  },
+  {
+    provide: 'IConfigService',
+    useClass: EnvConfigService,
+  },
+  {
+    provide: 'NotificationInputPort',
+    useClass: NotificationsFacade,
+  },
+  { provide: 'SystemInputPort', useClass: SystemManagementFacade },
+  {
+    provide: 'UserInputPort',
+    useClass: UserFacade,
+  },
+  { provide: 'HouseholdInputPort', useClass: HouseholdFacade },
 ];
 
 // MIDDLEWARES
@@ -52,24 +88,7 @@ const reexportedModules = [
 @Global()
 @Module({
   imports: [...reexportedModules],
-  providers: [
-    OutputStreamLoggerService,
-    RedisCacheService,
-    EnvConfigService,
-    {
-      provide: 'ICacheService',
-      useClass: RedisCacheService,
-    },
-    BusGateway,
-    AsyncContextService,
-  ],
-  exports: [
-    OutputStreamLoggerService,
-    EnvConfigService,
-    ...reexportedModules,
-    RedisCacheService,
-    BusGateway,
-    AsyncContextService,
-  ],
+  providers: [...exportedProviders],
+  exports: [...reexportedModules, ...exportedProviders],
 })
 export class CommonModule {}
