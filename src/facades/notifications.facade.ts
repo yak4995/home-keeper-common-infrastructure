@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
-import { NotificationsInputPort, SystemOpts } from '@yak4995/home-keeper-core';
+import {
+  ID,
+  IListDto,
+  INotification,
+  ListResponse,
+  NotificationsInputPort,
+  SystemOpts,
+} from '@yak4995/home-keeper-core';
 
 import { HomeKeeperServiceGateway } from '../gateways/home-keeper-service.gateway';
 
@@ -12,9 +19,38 @@ export class NotificationsFacade implements NotificationsInputPort {
     payload: Parameters<NotificationsInputPort['sendMessage']>[0],
     { trace }: SystemOpts,
   ): Promise<object> {
+    return this.busGateway.notifyServiceThroughtBus<
+      typeof payload & SystemOpts
+    >('notification.sendMessage', { ...payload, trace });
+  }
+
+  public async getUserMessages(
+    payload: IListDto<INotification>,
+    { trace }: SystemOpts,
+  ): Promise<object> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      ListResponse<INotification>
+    >('notification.getUserMessages', { ...payload, trace }, 1000);
+  }
+
+  public async markAsRead(
+    payload: { ids: ID[] },
+    { trace }: SystemOpts,
+  ): Promise<object> {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: boolean }
-    >('notification.sendMessage', { ...payload, trace }, 5000);
+    >('notification.markAsRead', { ...payload, trace }, 1000);
+  }
+
+  public async deleteMessages(
+    payload: { ids: ID[] },
+    { trace }: SystemOpts,
+  ): Promise<object> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      INotification
+    >('notification.deleteMessages', { ...payload, trace }, 1000);
   }
 }

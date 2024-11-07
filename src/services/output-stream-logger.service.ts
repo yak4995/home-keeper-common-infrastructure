@@ -1,3 +1,4 @@
+// import { inspect } from 'node:util';
 import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
@@ -11,12 +12,15 @@ export class OutputStreamLoggerService extends Logger {
 
   public static log(message: string, trace?: string, context?: string): void {
     console.log(
-      JSON.stringify({
-        message,
-        trace,
-        context,
-        environment: OutputStreamLoggerService.environment,
-      }),
+      /*inspect*/ JSON.stringify(
+        {
+          message,
+          trace,
+          context,
+          environment: OutputStreamLoggerService.environment,
+        },
+        // { depth: Infinity, maxArrayLength: 10, maxStringLength: Infinity },
+      ),
     );
   }
 
@@ -27,13 +31,16 @@ export class OutputStreamLoggerService extends Logger {
     context?: string,
   ): void {
     console.log(
-      JSON.stringify({
-        message,
-        trace,
-        stack,
-        context,
-        environment: OutputStreamLoggerService.environment,
-      }),
+      /*inspect*/ JSON.stringify(
+        {
+          message,
+          trace,
+          stack,
+          context,
+          environment: OutputStreamLoggerService.environment,
+        },
+        // { depth: Infinity, maxArrayLength: 10, maxStringLength: Infinity },
+      ),
     );
   }
 }

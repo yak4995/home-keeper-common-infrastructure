@@ -19,6 +19,32 @@ export class BusGateway {
 
   private static readonly DEFAULT_TIMEOUT = 5_000;
 
+  public async notifyServiceThroughtBus<TInput extends object & SystemOpts>(
+    address: string,
+    params?: TInput,
+  ): Promise<object> {
+    if (!params || !params?.trace) {
+      params.trace = uuidv4();
+    }
+    const [serviceName] = address.split('.');
+    const clientInstance: ClientProxy = this[`${camelCase(serviceName)}Client`];
+    if (!clientInstance) {
+      throw new TraceableError(params.trace, 'Incorrect request address');
+    }
+
+    try {
+      await clientInstance.emit(address, params).toPromise();
+
+      return { result: true };
+    } catch (e) {
+      throw new TraceableError(
+        params.trace,
+        e instanceof Error ? e.message : e,
+        e instanceof Error ? e.stack : undefined,
+      );
+    }
+  }
+
   public async callServiceThroughtBus<
     TInput extends object & SystemOpts,
     TResult = object,
