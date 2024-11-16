@@ -4,3 +4,4 @@ export * from './test-notifications-input.port';
 export * from './test-system-input.port';
 export * from './test-user-input.port';
 export * from './test-household-input.port';
+export * from './test-account-input.port';

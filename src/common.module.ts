@@ -18,6 +18,7 @@ import { NotificationsFacade } from './facades/notifications.facade';
 import { SystemManagementFacade } from './facades/system-management.facade';
 import { UserFacade } from './facades/user.facade';
 import { HouseholdFacade } from './facades/household.facade';
+import { AccountsFacade } from './facades/accounts.facade';
 
 const reexportedModules = [
   CacheModule.registerAsync({
@@ -61,6 +62,7 @@ const exportedProviders = [
     useClass: UserFacade,
   },
   { provide: 'HouseholdInputPort', useClass: HouseholdFacade },
+  { provide: 'AccountInputPort', useClass: AccountsFacade },
 ];
 
 // MIDDLEWARES

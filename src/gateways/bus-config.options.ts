@@ -11,6 +11,7 @@ export const busConfigOptions: ClientsModuleAsyncOptions = [
   { token: 'SYSTEM_MANAGEMENT', queueName: 'homekeeper-system-mgmt-service' },
   { token: 'USERS', queueName: 'homekeeper-users-sevice' },
   { token: 'HOUSEHOLDS', queueName: 'homekeeper-household-service' },
+  { token: 'ACCOUNTS', queueName: 'homekeeper-accounts-service' },
 ].map(({ token: name, queueName: queue }) => ({
   name,
   useFactory: async (config: EnvConfigService): Promise<ClientProvider> => ({

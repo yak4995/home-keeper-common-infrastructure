@@ -1,5 +1,6 @@
 import {
   HouseholdInvitationStatusEnum,
+  IAccount,
   IHousehold,
   IHouseholdInvitation,
   UserRole,
@@ -61,8 +62,11 @@ export const householdFixture = {
   isOwn: false,
   invitationLinks: [],
   members: [userFixture],
-  invitations: [],
-  accounts: [],
+  invitations: [
+    { id: 'default-invitation-id' },
+    { id: 'invitation-id' },
+  ] as IHouseholdInvitation[],
+  accounts: [{ id: 'default-account-id' }, { id: 'account-id' }] as IAccount[],
   budgets: [],
   transactionCategories: [],
 };
@@ -74,4 +78,19 @@ export const householdInvitationFixture = {
   household: householdFixture,
   user: userFixture,
   status: HouseholdInvitationStatusEnum.PENDING,
+  isOwner: false,
+};
+
+export const accountFixture = {
+  id: 'account-id',
+  createdAt: new Date(0),
+  updatedAt: new Date(0),
+  name: 'test',
+  currency: currencyFixture,
+  initialBalance: 0,
+  owner: householdFixture,
+  iban: undefined,
+  bankName: undefined,
+
+  budgets: [],
 };
