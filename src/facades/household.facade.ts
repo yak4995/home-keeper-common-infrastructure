@@ -33,12 +33,12 @@ export class HouseholdFacade implements HouseholdInputPort {
 
   public async createInvitation(
     payload: { userId: ID } & IIdentificationDto,
-    { trace }: SystemOpts,
+    { trace, isSystemCall }: SystemOpts,
   ) {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IHouseholdInvitation
-    >('household.createInvitation', { ...payload, trace }, 1000);
+    >('household.createInvitation', { ...payload, trace, isSystemCall }, 1000);
   }
 
   public async deleteInvitation(
@@ -85,12 +85,12 @@ export class HouseholdFacade implements HouseholdInputPort {
 
   public async createHousehold(
     payload: { memberId: ID; name: string },
-    { trace }: SystemOpts,
+    { trace, isSystemCall }: SystemOpts,
   ) {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IHousehold
-    >('household.createHousehold', { ...payload, trace }, 1000);
+    >('household.createHousehold', { ...payload, trace, isSystemCall }, 1000);
   }
 
   public async updateHousehold(

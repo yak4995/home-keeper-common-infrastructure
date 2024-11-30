@@ -51,7 +51,12 @@ export const userFixture = {
   lang: languageFixture,
   timezone: timezoneFixture,
   households: [{ id: 'household-id' } as IHousehold],
-  invitations: [{ household: { id: 'household-id' } } as IHouseholdInvitation],
+  invitations: [
+    {
+      household: { id: 'household-id' },
+      user: { id: 'some-id' },
+    } as IHouseholdInvitation,
+  ],
 };
 
 export const householdFixture = {
