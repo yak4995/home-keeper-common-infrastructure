@@ -13,15 +13,12 @@ import {
 } from '@yak4995/home-keeper-core';
 
 import { HomeKeeperServiceGateway } from '../gateways/home-keeper-service.gateway';
-import { IRegistrationDto } from 'dto/registration.dto';
 
-// our interactor, which implements input port, uses entity (IUser) and IEntityGateway implementation (BusGateway in case of api gateway)
+import { IRegistrationDto } from '../dto/registration.dto';
+
 @Injectable()
 export class UserFacade implements UserInputPort {
   constructor(private readonly busGateway: HomeKeeperServiceGateway) {}
-
-  // should use ouput port implementation (presenter) before return of response, which returns view model (IUser json in our case) to user
-  // uses request model (IUserDto) and response model (IUser)
 
   public createUser(
     payload: IRegistrationDto,

@@ -5,3 +5,4 @@ export * from './test-system-input.port';
 export * from './test-user-input.port';
 export * from './test-household-input.port';
 export * from './test-account-input.port';
+export * from './test-transaction-category-input.port';

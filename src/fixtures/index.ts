@@ -99,3 +99,34 @@ export const accountFixture = {
 
   budgets: [],
 };
+
+export const systemTransactionCategoriesFixture = [
+  {
+    id: 'income-category-id',
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
+    name: 'Income',
+    isOutcome: false,
+    parent: null,
+    owner: null,
+  },
+  {
+    id: 'expenses-category-id',
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
+    name: 'Expenses',
+    isOutcome: true,
+    parent: null,
+    owner: null,
+  },
+];
+
+export const transactionCategoryFixture = {
+  id: 'transaction-category-id',
+  createdAt: new Date(0),
+  updatedAt: new Date(0),
+  name: 'Test',
+  isOutcome: true,
+  parent: systemTransactionCategoriesFixture[1],
+  owner: householdFixture,
+};
