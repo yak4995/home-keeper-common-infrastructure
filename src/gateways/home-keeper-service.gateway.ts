@@ -22,6 +22,10 @@ export class HomeKeeperServiceGateway extends BusGateway {
     private accountsClient: ClientProxy,
     @Inject('TRANSACTION_CATEGORIES')
     private transactionCategoryClient: ClientProxy,
+    @Inject('INTEGRATION')
+    private integrationClient: ClientProxy,
+    @Inject('TRANSACTIONS')
+    private transactionsClient: ClientProxy,
   ) {
     super(fallbackProvider);
   }

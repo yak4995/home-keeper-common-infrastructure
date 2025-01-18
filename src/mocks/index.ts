@@ -6,3 +6,5 @@ export * from './test-user-input.port';
 export * from './test-household-input.port';
 export * from './test-account-input.port';
 export * from './test-transaction-category-input.port';
+export * from './test-transaction-input.port';
+export * from './test-transaction-analytic-input.port';

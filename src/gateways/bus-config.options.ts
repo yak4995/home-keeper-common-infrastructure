@@ -16,6 +16,14 @@ export const busConfigOptions: ClientsModuleAsyncOptions = [
     token: 'TRANSACTION_CATEGORIES',
     queueName: 'homekeeper-tx-categories-service',
   },
+  {
+    token: 'INTEGRATION',
+    queueName: 'homekeeper-integration-service',
+  },
+  {
+    token: 'TRANSACTIONS',
+    queueName: 'homekeeper-transactions-service',
+  },
 ].map(({ token: name, queueName: queue }) => ({
   name,
   useFactory: async (config: EnvConfigService): Promise<ClientProvider> => ({

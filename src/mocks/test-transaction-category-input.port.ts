@@ -48,6 +48,10 @@ export class TestTransactionCategoryInputPort
     };
   }
 
+  public async getById(): Promise<ITransactionCategory> {
+    return transactionCategoryFixture;
+  }
+
   public async createCategory(): Promise<ITransactionCategory> {
     return transactionCategoryFixture;
   }

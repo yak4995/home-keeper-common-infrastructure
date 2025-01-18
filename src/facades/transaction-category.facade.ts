@@ -69,6 +69,16 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
     >('transaction-category.search', { ...payload, trace }, 1000);
   }
 
+  public getById(
+    payload: IIdentificationDto & IProjectionDto<ITransactionCategory>,
+    { trace }: SystemOpts,
+  ): Promise<ListResponse<ITransactionCategory>> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      ListResponse<ITransactionCategory>
+    >('transaction-category.getById', { ...payload, trace }, 1000);
+  }
+
   public createCategory(
     payload: ITransactionCategoryDto,
     { trace }: SystemOpts,

@@ -10,6 +10,8 @@ export class RedisCacheService implements ICacheService {
     private readonly cacheGateway: Cache,
   ) {}
 
+  private readonly inFlightMap: Map<string, Promise<unknown>> = new Map();
+
   getAllKeys(): Promise<string[]> {
     return this.cacheGateway.store.keys();
   }
@@ -18,13 +20,25 @@ export class RedisCacheService implements ICacheService {
     const value: T = await this.cacheGateway.get(key);
     if (value) {
       return value;
-    } else {
-      const externalValue = await fetchCallback();
-      if (externalValue) {
+    }
+
+    if (this.inFlightMap.has(key)) {
+      return this.inFlightMap.get(key) as Promise<T>;
+    }
+
+    const promise = (async () => {
+      try {
+        const externalValue = await fetchCallback();
         await this.cacheGateway.set(key, externalValue);
         return externalValue;
+      } finally {
+        this.inFlightMap.delete(key);
       }
-    }
+    })();
+
+    this.inFlightMap.set(key, promise);
+
+    return promise;
   }
 
   async set<T>(keys: string[], value: T): Promise<T[]> {

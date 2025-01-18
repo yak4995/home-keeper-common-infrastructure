@@ -20,6 +20,8 @@ import { UserFacade } from './facades/user.facade';
 import { HouseholdFacade } from './facades/household.facade';
 import { AccountsFacade } from './facades/accounts.facade';
 import { TransactionCategoryFacade } from './facades/transaction-category.facade';
+import { IntegrationFacade } from './facades/integration.facade';
+import { TransactionsFacade } from './facades/transaction.facade';
 
 const reexportedModules = [
   CacheModule.registerAsync({
@@ -67,6 +69,14 @@ const exportedProviders = [
   {
     provide: 'TransactionCategoryInputPort',
     useClass: TransactionCategoryFacade,
+  },
+  {
+    provide: 'CurrencyConverterService',
+    useClass: IntegrationFacade,
+  },
+  {
+    provide: 'TransactionInputPort',
+    useClass: TransactionsFacade,
   },
 ];
 

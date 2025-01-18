@@ -130,3 +130,16 @@ export const transactionCategoryFixture = {
   parent: systemTransactionCategoriesFixture[1],
   owner: householdFixture,
 };
+
+export const transactionFixture = {
+  id: 'transaction-category-id',
+  createdAt: new Date(0),
+  updatedAt: new Date(0),
+  date: new Date(0),
+  amount: 100,
+  currency: currencyFixture,
+  account: accountFixture,
+  transactionCategory: transactionCategoryFixture,
+  counterpartyAccount: null,
+  description: 'test',
+};
