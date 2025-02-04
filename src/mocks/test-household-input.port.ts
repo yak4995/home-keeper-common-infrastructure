@@ -52,4 +52,8 @@ export class TestHouseholdInputPort implements HouseholdInputPort {
   public deleteHousehold(): never {
     throw new Error('Method not implemented');
   }
+
+  public async syncState(): Promise<{ success: boolean }> {
+    return { success: true };
+  }
 }

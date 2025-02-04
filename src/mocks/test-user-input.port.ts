@@ -26,4 +26,8 @@ export class TestUserInputPort implements UserInputPort {
   public async deleteAccount(): Promise<IUser> {
     throw new Error('Method not implemented.');
   }
+
+  public async syncState(): Promise<{ success: boolean }> {
+    return { success: true };
+  }
 }

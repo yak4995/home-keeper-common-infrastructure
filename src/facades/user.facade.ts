@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import {
+  ID,
   IIdentificationDto,
   IListDto,
   IProjectionDto,
@@ -83,5 +84,16 @@ export class UserFacade implements UserInputPort {
       typeof payload & SystemOpts,
       IUser
     >('users.delete', { ...payload, trace }, 1000);
+  }
+
+  public async syncState(
+    payload: { userIds: ID[] },
+    { trace }: SystemOpts,
+  ): Promise<{ success: boolean }> {
+    const { result } = (await this.busGateway.notifyServiceThroughtBus<
+      typeof payload & SystemOpts
+    >('users.sync-state', { ...payload, trace })) as { result: boolean };
+
+    return { success: result };
   }
 }

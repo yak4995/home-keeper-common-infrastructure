@@ -33,6 +33,8 @@ export * from './interfaces/home-keeper-auth-output.port';
 
 export * from './mocks';
 
+export * from './pipes/dto-class-transformation.pipe';
+
 export * from './services/async-context.service';
 export * from './services/redis-cache.service';
 export * from './services/output-stream-logger.service';

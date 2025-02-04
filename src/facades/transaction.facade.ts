@@ -129,7 +129,6 @@ export class TransactionsFacade
     payload: { from: ID; to: ID; forDate: Date; rate: number },
     { trace }: SystemOpts,
   ): Promise<{ result: boolean }> {
-    payload.forDate = new Date(payload.forDate);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: boolean }
@@ -140,8 +139,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<{ result: number }> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: number }
@@ -152,8 +149,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<{ result: number }> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: number }
@@ -164,8 +159,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<{ result: number }> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: number }
@@ -176,8 +169,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<{ result: number }> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: number }
@@ -188,8 +179,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<{ result: number }> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: number }
@@ -200,8 +189,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<{ result: number }> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { result: number }
@@ -212,8 +199,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<IAnalyticComparisonDto> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IAnalyticComparisonDto
@@ -224,8 +209,6 @@ export class TransactionsFacade
     payload: ITransactionAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<IAnalyticComparisonDto> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IAnalyticComparisonDto
@@ -236,8 +219,6 @@ export class TransactionsFacade
     payload: ITransactionChangeAnalyticDto,
     { trace }: SystemOpts,
   ): Promise<IAnalyticComparisonDto> {
-    payload.from = new Date(payload.from);
-    payload.to = new Date(payload.to);
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IAnalyticComparisonDto

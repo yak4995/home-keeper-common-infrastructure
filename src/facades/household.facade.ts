@@ -154,4 +154,15 @@ export class HouseholdFacade implements HouseholdInputPort {
       IHousehold
     >('household.deleteHousehold', { ...payload, trace }, 1000);
   }
+
+  public async syncState(
+    payload: { userIds: ID[] },
+    { trace }: SystemOpts,
+  ): Promise<{ success: boolean }> {
+    const { result } = (await this.busGateway.notifyServiceThroughtBus<
+      typeof payload & SystemOpts
+    >('household.sync-state', { ...payload, trace })) as { result: boolean };
+
+    return { success: result };
+  }
 }
