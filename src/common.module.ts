@@ -75,6 +75,14 @@ const exportedProviders = [
     useClass: IntegrationFacade,
   },
   {
+    provide: 'IImportService',
+    useClass: IntegrationFacade,
+  },
+  {
+    provide: 'IBackupService',
+    useClass: IntegrationFacade,
+  },
+  {
     provide: 'TransactionInputPort',
     useClass: TransactionsFacade,
   },

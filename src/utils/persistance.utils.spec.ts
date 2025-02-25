@@ -147,7 +147,7 @@ describe('buildProjectionForMicroOrm', () => {
   it('all fields are set to 1', () => {
     expect(
       buildProjectionForMicroOrm<IHousehold>(
-        { isOwn: 1, name: 1, accounts: 1, budgets: 1 },
+        { isOwn: 1, name: 1, accounts: { owner: 1 }, budgets: 1 },
         [
           'accounts',
           'budgets',

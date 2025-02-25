@@ -115,7 +115,11 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
   }
 
   for (const key in projection) {
-    if (projection[key] === 1) {
+    const value = projection[key];
+    if (
+      value === 1 ||
+      (populatedFields.includes(key) && typeof value === 'object')
+    ) {
       if (populatedFields.includes(key)) {
         if (!outsideFields.includes(key)) {
           if (!populate) populate = [];

@@ -3,29 +3,51 @@ import { Injectable } from '@nestjs/common';
 import {
   CurrencyConverterService,
   ID,
-  // ITransaction,
   SystemOpts,
+  IImportService,
+  IBackupService,
+  Bank,
 } from '@yak4995/home-keeper-core';
 
 import { HomeKeeperServiceGateway } from '../gateways/home-keeper-service.gateway';
 
 @Injectable()
-export class IntegrationFacade implements CurrencyConverterService {
+export class IntegrationFacade
+  implements CurrencyConverterService, IImportService, IBackupService
+{
   constructor(private readonly busGateway: HomeKeeperServiceGateway) {}
 
-  /*async importTransactions(
+  importTransactions(
     payload: {
-      accountId: string;
-      bank: string;
-      mimetype: string;
-      data: Buffer;
+      bank: Bank;
+      accountId: ID;
+      bankStatement: {
+        originalname: string;
+        mimetype: string;
+        buffer: Buffer;
+      };
     },
     { trace }: SystemOpts,
-  ): Promise<ITransaction[]> {
-    console.log(payload);
-    console.log(trace);
-    return [];
-  }*/
+  ): Promise<object> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      { rate: number }
+    >('integration.import-transactions', { ...payload, trace }, 5000);
+  }
+
+  backup(payload: { userId: ID }, { trace }: SystemOpts): Promise<object> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      { rate: number }
+    >('integration.backup', { ...payload, trace }, 5000);
+  }
+
+  restore(payload: object, { trace }: SystemOpts): Promise<object> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      { rate: number }
+    >('integration.restore', { ...payload, trace }, 5000);
+  }
 
   getRateFor(
     payload: { from: ID; to: ID; forDate: Date },

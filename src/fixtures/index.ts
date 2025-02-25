@@ -1,4 +1,5 @@
 import {
+  Bank,
   HouseholdInvitationStatusEnum,
   IAccount,
   IHousehold,
@@ -95,7 +96,7 @@ export const accountFixture = {
   initialBalance: 0,
   owner: householdFixture,
   iban: undefined,
-  bankName: undefined,
+  bank: Bank.CASH,
 
   budgets: [],
 };
@@ -140,6 +141,5 @@ export const transactionFixture = {
   currency: currencyFixture,
   account: accountFixture,
   transactionCategory: transactionCategoryFixture,
-  counterpartyAccount: null,
   description: 'test',
 };
