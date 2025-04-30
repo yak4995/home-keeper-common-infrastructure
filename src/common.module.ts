@@ -2,7 +2,7 @@ import { redisStore } from 'cache-manager-redis-store';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { Global, Module } from '@nestjs/common';
-import { CacheModule, CacheStore } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { ClientsModule } from '@nestjs/microservices';
 
 import { AsyncContextService } from './services/async-context.service';
@@ -22,15 +22,17 @@ import { AccountsFacade } from './facades/accounts.facade';
 import { TransactionCategoryFacade } from './facades/transaction-category.facade';
 import { IntegrationFacade } from './facades/integration.facade';
 import { TransactionsFacade } from './facades/transaction.facade';
+import { BudgetFacade } from './facades/budget.facade';
 
 const reexportedModules = [
   CacheModule.registerAsync({
+    // @ts-expect-error incompatible types regarding versions
     useFactory: async (config: EnvConfigService) => {
       return {
-        store: (await redisStore({
+        store: await redisStore({
           url: `redis://${'' + (await config.getConfigValue('cacheUrl'))}:${+(await config.getConfigValue('cachePort'))}`,
           ttl: +(await config.getConfigValue('cacheTTL')),
-        })) as unknown as CacheStore,
+        }),
         ttl: +(await config.getConfigValue('cacheTTL')),
       };
     },
@@ -85,6 +87,10 @@ const exportedProviders = [
   {
     provide: 'TransactionInputPort',
     useClass: TransactionsFacade,
+  },
+  {
+    provide: 'BudgetInputPort',
+    useClass: BudgetFacade,
   },
 ];
 

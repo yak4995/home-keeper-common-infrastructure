@@ -2,6 +2,8 @@ import {
   Bank,
   HouseholdInvitationStatusEnum,
   IAccount,
+  IBudget,
+  IBudgetItem,
   IHousehold,
   IHouseholdInvitation,
   UserRole,
@@ -142,4 +144,24 @@ export const transactionFixture = {
   account: accountFixture,
   transactionCategory: transactionCategoryFixture,
   description: 'test',
+};
+
+export const budgetFixture: IBudget = {
+  id: 'budget-id',
+  createdAt: new Date(0),
+  updatedAt: new Date(0),
+  startDate: new Date(0),
+  endDate: new Date(0),
+  owner: householdFixture,
+  currency: currencyFixture,
+  items: [],
+};
+
+export const budgetItemFixture: IBudgetItem = {
+  id: 'budget-item-id',
+  createdAt: new Date(0),
+  updatedAt: new Date(0),
+  budget: budgetFixture,
+  category: transactionCategoryFixture,
+  dedicatedSum: 100_00,
 };

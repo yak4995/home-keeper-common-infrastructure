@@ -17,6 +17,10 @@ export const busConfigOptions: ClientsModuleAsyncOptions = [
     queueName: 'homekeeper-tx-categories-service',
   },
   {
+    token: 'BUDGETS',
+    queueName: 'homekeeper-budgets-service',
+  },
+  {
     token: 'INTEGRATION',
     queueName: 'homekeeper-integration-service',
   },

@@ -11,7 +11,11 @@ export * from './facades/notifications.facade';
 export * from './facades/system-management.facade';
 export * from './facades/user.facade';
 export * from './facades/household.facade';
+export * from './facades/accounts.facade';
 export * from './facades/transaction-category.facade';
+export * from './facades/transaction.facade';
+export * from './facades/budget.facade';
+export * from './facades/integration.facade';
 
 export * from './dto/login.dto';
 export * from './dto/logout.dto';
