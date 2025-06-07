@@ -147,4 +147,14 @@ export class BudgetFacade implements BudgetInputPort, BudgetAnalyticInputPort {
       IAnalyticComparisonDto
     >('budget.change', { ...payload, trace }, 1000);
   }
+
+  public getByOwnerIds(
+    payload: { ownerIds: ID[] } & IProjectionDto<IBudget>,
+    { trace }: SystemOpts,
+  ): Promise<IBudget[]> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      IBudget[]
+    >('budget.getByOwnerIds', { ...payload, trace }, 1000);
+  }
 }

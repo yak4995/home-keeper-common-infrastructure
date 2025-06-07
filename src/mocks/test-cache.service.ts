@@ -5,7 +5,11 @@ export class TestCacheService implements ICacheService {
     throw new Error('Method not implemented.');
   }
 
-  async get<T>(_key: string, fetchCallback: () => Promise<T>): Promise<T> {
+  has(): Promise<boolean> {
+    return Promise.resolve(false);
+  }
+
+  get<T>(_key: string, fetchCallback: () => Promise<T>): Promise<T> {
     return fetchCallback();
   }
 

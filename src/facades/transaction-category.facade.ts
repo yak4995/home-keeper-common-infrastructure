@@ -16,6 +16,7 @@ import { HomeKeeperServiceGateway } from '../gateways/home-keeper-service.gatewa
 @Injectable()
 export class TransactionCategoryFacade implements TransactionCategoryInputPort {
   constructor(private readonly busGateway: HomeKeeperServiceGateway) {}
+
   public getTopCategories(
     _: {},
     { trace }: SystemOpts,
@@ -107,5 +108,25 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
       typeof payload & SystemOpts,
       ITransactionCategory
     >('transaction-category.delete', { ...payload, trace }, 1000);
+  }
+
+  public getByIds(
+    payload: { ids: ID[] } & IProjectionDto<ITransactionCategory>,
+    { trace }: SystemOpts,
+  ): Promise<ITransactionCategory[]> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      ITransactionCategory[]
+    >('transaction-category.getByIds', { ...payload, trace }, 1000);
+  }
+
+  public getByOwnerIds(
+    payload: { ownerIds: ID[] } & IProjectionDto<ITransactionCategory>,
+    { trace }: SystemOpts,
+  ): Promise<ITransactionCategory[]> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      ITransactionCategory[]
+    >('transaction-category.getByOwnerIds', { ...payload, trace }, 1000);
   }
 }

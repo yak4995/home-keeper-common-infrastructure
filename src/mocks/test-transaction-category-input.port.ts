@@ -63,4 +63,12 @@ export class TestTransactionCategoryInputPort
   public async deleteCategory(): Promise<ITransactionCategory> {
     return transactionCategoryFixture;
   }
+
+  public async getByIds(): Promise<ITransactionCategory[]> {
+    return [transactionCategoryFixture];
+  }
+
+  public async getByOwnerIds(): Promise<ITransactionCategory[]> {
+    return [transactionCategoryFixture];
+  }
 }

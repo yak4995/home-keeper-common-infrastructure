@@ -16,6 +16,12 @@ export class RedisCacheService implements ICacheService {
     return this.cacheGateway.store.keys();
   }
 
+  async has(key: string): Promise<boolean> {
+    const value = await this.cacheGateway.get(key);
+
+    return !!value;
+  }
+
   async get<T>(key: string, fetchCallback: () => Promise<T>): Promise<T> {
     const value: T = await this.cacheGateway.get(key);
     if (value) {

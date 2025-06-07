@@ -56,4 +56,12 @@ export class TestHouseholdInputPort implements HouseholdInputPort {
   public async syncState(): Promise<{ success: boolean }> {
     return { success: true };
   }
+
+  public async getHouseholdsByIds(): Promise<never> {
+    throw new Error('Method not implemented');
+  }
+
+  public async getInvitationsByUserIds(): Promise<never> {
+    throw new Error('Method not implemented');
+  }
 }

@@ -155,6 +155,26 @@ export class HouseholdFacade implements HouseholdInputPort {
     >('household.deleteHousehold', { ...payload, trace }, 1000);
   }
 
+  getHouseholdsByIds(
+    payload: { ids: ID[] } & IProjectionDto<IHousehold>,
+    { trace }: SystemOpts,
+  ): Promise<IHousehold[]> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      IHousehold[]
+    >('household.getHouseholdsByIds', { ...payload, trace }, 1000);
+  }
+
+  getInvitationsByUserIds(
+    payload: { userIds: ID[] } & IProjectionDto<IHouseholdInvitation>,
+    { trace }: SystemOpts,
+  ): Promise<IHouseholdInvitation[]> {
+    return this.busGateway.callServiceThroughtBus<
+      typeof payload & SystemOpts,
+      IHouseholdInvitation[]
+    >('household.getInvitationsByUserIds', { ...payload, trace }, 1000);
+  }
+
   public async syncState(
     payload: { userIds: ID[] },
     { trace }: SystemOpts,
