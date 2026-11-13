@@ -1,4 +1,4 @@
-import { redisStore } from 'cache-manager-redis-store';
+import { createRedisCacheOptions } from './services/redis-cache.options';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { Global, Module } from '@nestjs/common';
@@ -26,16 +26,7 @@ import { BudgetFacade } from './facades/budget.facade';
 
 const reexportedModules = [
   CacheModule.registerAsync({
-    // @ts-expect-error incompatible types regarding versions
-    useFactory: async (config: EnvConfigService) => {
-      return {
-        store: await redisStore({
-          url: `redis://${'' + (await config.getConfigValue('cacheUrl'))}:${+(await config.getConfigValue('cachePort'))}`,
-          ttl: +(await config.getConfigValue('cacheTTL')),
-        }),
-        ttl: +(await config.getConfigValue('cacheTTL')),
-      };
-    },
+    useFactory: createRedisCacheOptions,
     inject: [EnvConfigService],
   }),
   PrometheusModule.register(),

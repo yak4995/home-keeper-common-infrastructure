@@ -4,7 +4,6 @@ import { ILogoutDto } from '../dto/logout.dto';
 import { IRegistrationDto } from '../dto/registration.dto';
 import { ISendOtpDto } from '../dto/send-otp.dto';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HomeKeeperAuthInputPort
   extends InputPort<{
     signUp: [IRegistrationDto, object];

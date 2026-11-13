@@ -19,7 +19,6 @@ export async function fetchListThroughCache<T extends IPersistantEntity>(
   },
   { trace }: SystemOpts,
 ): Promise<ListResponse<T>> {
-  // eslint-disable-next-line prettier/prettier
   const { payload, cacheService, repository, listCacheKey, idCacheKey } =
     params;
 

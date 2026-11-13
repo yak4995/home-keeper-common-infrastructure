@@ -12,19 +12,32 @@ export class RedisCacheService implements ICacheService {
 
   private readonly inFlightMap: Map<string, Promise<unknown>> = new Map();
 
-  getAllKeys(): Promise<string[]> {
-    return this.cacheGateway.store.keys();
+  async getAllKeys(): Promise<string[]> {
+    const keys = new Set<string>();
+
+    for (const store of this.cacheGateway.stores) {
+      if (!store.iterator) {
+        throw new Error('Cache store does not support key iteration');
+      }
+
+      for await (const [key] of store.iterator({})) {
+        keys.add(key);
+      }
+    }
+
+    return [...keys];
   }
 
   async has(key: string): Promise<boolean> {
     const value = await this.cacheGateway.get(key);
 
-    return !!value;
+    return value !== undefined && value !== null;
   }
 
   async get<T>(key: string, fetchCallback: () => Promise<T>): Promise<T> {
     const value: T = await this.cacheGateway.get(key);
-    if (value) {
+
+    if (value !== undefined && value !== null) {
       return value;
     }
 
@@ -49,19 +62,17 @@ export class RedisCacheService implements ICacheService {
 
   async set<T>(keys: string[], value: T): Promise<T[]> {
     await this.clear(keys);
+
     await Promise.all(
-      keys.map(
-        (key: string): Promise<void> => this.cacheGateway.set(key, value),
-      ),
+      keys.map((key: string) => this.cacheGateway.set(key, value)),
     );
+
     return [value];
   }
 
   async clear(keys: string[]): Promise<boolean> {
     try {
-      await Promise.all(
-        keys.map((key: string): Promise<void> => this.cacheGateway.del(key)),
-      );
+      await Promise.all(keys.map((key: string) => this.cacheGateway.del(key)));
       return true;
     } catch {
       return false;
@@ -70,8 +81,7 @@ export class RedisCacheService implements ICacheService {
 
   async clearAll(): Promise<boolean> {
     try {
-      await this.cacheGateway.reset();
-      return true;
+      return await this.cacheGateway.clear();
     } catch {
       return false;
     }

@@ -1,7 +1,7 @@
 import { camelCase } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -24,7 +24,7 @@ export class BusGateway {
     params?: TInput,
   ): Promise<object> {
     if (!params || !params?.trace) {
-      params.trace = uuidv4();
+      params.trace = randomUUID();
     }
     const [serviceName] = address.split('.');
     const clientInstance: ClientProxy = this[`${camelCase(serviceName)}Client`];
@@ -33,7 +33,7 @@ export class BusGateway {
     }
 
     try {
-      await clientInstance.emit(address, params).toPromise();
+      await lastValueFrom(clientInstance.emit(address, params));
 
       return { result: true };
     } catch (e) {
@@ -55,7 +55,7 @@ export class BusGateway {
     fallbackKey?: string,
   ): Promise<TResult> {
     if (!params || !params?.trace) {
-      params.trace = uuidv4();
+      params.trace = randomUUID();
     }
     const [serviceName] = address.split('.');
     const clientInstance: ClientProxy = this[`${camelCase(serviceName)}Client`];
@@ -76,28 +76,28 @@ export class BusGateway {
 
       return response;
     } catch (e) {
-      e = new TraceableError(
+      const error = new TraceableError(
         params.trace,
         e instanceof Error ? e.message : e,
         e instanceof Error ? e.stack : undefined,
       );
       if (!fallbackKey) {
-        throw e;
+        throw error;
       }
 
       try {
         const fallbackResponse: TResult =
           await this.fallbackProvider.get<TResult>(fallbackKey, () =>
-            Promise.reject(e),
+            Promise.reject(error),
           );
 
         if (!fallbackResponse) {
-          throw e;
+          throw error;
         } else {
           return fallbackResponse;
         }
       } catch {
-        throw e;
+        throw error;
       }
     }
   }
