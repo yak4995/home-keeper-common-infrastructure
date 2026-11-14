@@ -1,15 +1,20 @@
 import {
+  ComparisonOperators,
   FieldOperators,
+  ID,
   FilterCriteria,
   IPersistantEntity,
   ProjectionCriteria,
 } from '@yak4995/home-keeper-core';
+
+import type { FilterObject, ObjectQuery } from '@mikro-orm/core';
 
 export function applyProjection<T extends IPersistantEntity>(
   projection: ProjectionCriteria<T>,
   value: T,
 ): Partial<T> {
   const projectionKeys = Object.keys(projection);
+
   if (projectionKeys.length === 0) {
     return value;
   }
@@ -24,29 +29,33 @@ export function applyProjection<T extends IPersistantEntity>(
       delete value[key];
     }
   }
+
   return value;
 }
 
+/** Maps core filter criteria to a MikroORM query at the persistence boundary. */
 export function buildCriteriaForMicroOrm<T extends IPersistantEntity>(
   criteria: FilterCriteria<T>,
-): Record<keyof T, unknown> {
+): FilterObject<T> {
   const query: Record<string, unknown> = {};
 
   for (const key in criteria) {
-    const fieldCriteria = criteria[key as keyof T];
+    const fieldCriteria = criteria[key];
+
     if (fieldCriteria !== undefined) {
-      query[key] = buildFieldOperatorsForMicroOrm(
-        fieldCriteria as FieldOperators<T>,
-      ) as Record<keyof T, unknown>;
+      query[key] = buildFieldOperatorsForMicroOrm<T[typeof key]>(fieldCriteria);
     }
   }
 
-  return query as Record<keyof T, unknown>;
+  // Dynamic keys cannot be checked against MikroORM's conditional query type.
+  // Keep the assertion inside the mapper; callers use the core criteria type.
+  return query as FilterObject<T>;
 }
 
+/** Maps core field operators to MikroORM scalar or relation conditions. */
 export function buildFieldOperatorsForMicroOrm<T>(
   operators: FieldOperators<T>,
-): Record<keyof T, unknown> {
+): ObjectQuery<T> {
   const operatorEntries: Record<string, unknown> = {};
 
   if ('$eq' in operators && operators.$eq !== undefined) {
@@ -54,7 +63,11 @@ export function buildFieldOperatorsForMicroOrm<T>(
   } else if ('$neq' in operators && operators.$neq !== undefined) {
     operatorEntries['$ne'] = operators.$neq;
   } else if ('id' in operators) {
-    operatorEntries.id = operators.id['$eq'];
+    const idCondition = operators.id as ComparisonOperators<ID>;
+    operatorEntries.id =
+      '$eq' in idCondition && idCondition.$eq !== undefined
+        ? idCondition.$eq
+        : buildFieldOperatorsForMicroOrm<ID>(idCondition);
   } else {
     const comparisonOps = [
       '$in',
@@ -64,6 +77,7 @@ export function buildFieldOperatorsForMicroOrm<T>(
       '$gt',
       '$gte',
     ] as const;
+
     for (const op of comparisonOps) {
       if (op in operators && operators[op] !== undefined) {
         operatorEntries[op] = operators[op];
@@ -74,21 +88,29 @@ export function buildFieldOperatorsForMicroOrm<T>(
   if ('$text' in operators && operators.$text !== undefined) {
     operatorEntries['$ilike'] = '%' + operators.$text + '%';
   }
+
   if ('$regex' in operators && operators.$regex !== undefined) {
-    operatorEntries['$re'] = operators.$regex;
+    // Match MikroORM's RegExp normalization; $re itself accepts a string.
+    operatorEntries['$re'] =
+      operators.$regex instanceof RegExp
+        ? `${operators.$regex.ignoreCase ? '(?i)' : ''}${operators.$regex.source}`
+        : operators.$regex;
   }
 
   if ('$arrayIncludes' in operators && operators.$arrayIncludes !== undefined) {
     operatorEntries['$contains'] = [operators.$arrayIncludes];
   }
+
   if ('$arrayEq' in operators && operators.$arrayEq !== undefined) {
     operatorEntries['$contained'] = operators.$arrayEq;
   }
+
   if ('$arraySize' in operators && operators.$arraySize !== undefined) {
     operatorEntries['$size'] = operators.$arraySize;
   }
 
-  return operatorEntries as Record<keyof T, unknown>;
+  // All operator renaming and relation conversion is contained in this mapper.
+  return operatorEntries as ObjectQuery<T>;
 }
 
 export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
@@ -96,13 +118,11 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
   populatedFields: (keyof T)[],
   outsideFields: (keyof T)[],
 ): { fields: (keyof T)[]; populate: (keyof T)[] } {
-  let fields: (keyof T)[] = undefined;
-  let populate: (keyof T)[] = undefined;
-
   const exclusiveProjection = Object.values(projection).includes(0);
+  const fields: (keyof T)[] = [];
+  const populate: (keyof T)[] = exclusiveProjection ? [...populatedFields] : [];
 
   if (exclusiveProjection) {
-    populate = [...populatedFields];
     for (const key in projection) {
       if (projection[key] === 0 && populatedFields.includes(key)) {
         populate.splice(
@@ -111,6 +131,7 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
         );
       }
     }
+
     return { fields, populate };
   }
 
@@ -122,12 +143,10 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
     ) {
       if (populatedFields.includes(key)) {
         if (!outsideFields.includes(key)) {
-          if (!populate) populate = [];
           populate.push(key);
         }
       } else {
         if (!outsideFields.includes(key)) {
-          if (!fields) fields = [];
           fields.push(key);
         }
       }

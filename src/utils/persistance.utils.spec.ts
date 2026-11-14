@@ -42,7 +42,7 @@ describe('buildFieldOperatorsForMicroOrm', () => {
       }),
     ).toStrictEqual({
       $ilike: '%test%',
-      $re: /test(a*)/g,
+      $re: 'test(a*)',
     });
   });
 
@@ -82,7 +82,7 @@ describe('buildCriteriaForMicroOrm', () => {
         $lte: 60,
       },
       name: {
-        $re: /test/g,
+        $re: 'test',
       },
       tz: { id: 'some-id' },
     });
@@ -103,7 +103,7 @@ describe('buildProjectionForMicroOrm', () => {
         ],
         [],
       ),
-    ).toStrictEqual({ fields: undefined, populate: undefined });
+    ).toStrictEqual({ fields: [], populate: [] });
   });
 
   it('all fields are set to 0 and no ones are in populate', () => {
@@ -120,7 +120,7 @@ describe('buildProjectionForMicroOrm', () => {
         [],
       ),
     ).toStrictEqual({
-      fields: undefined,
+      fields: [],
       populate: [
         'accounts',
         'budgets',
@@ -139,7 +139,7 @@ describe('buildProjectionForMicroOrm', () => {
         [],
       ),
     ).toStrictEqual({
-      fields: undefined,
+      fields: [],
       populate: ['invitations', 'members', 'transactionCategories'],
     });
   });
@@ -177,7 +177,7 @@ describe('buildProjectionForMicroOrm', () => {
         [],
       ),
     ).toStrictEqual({
-      fields: undefined,
+      fields: [],
       populate: ['budgets', 'invitations', 'members', 'transactionCategories'],
     });
   });
