@@ -30,4 +30,6 @@ export class TestAccountInputPort implements AccountInputPort {
   public async deleteAccount(): Promise<IAccount> {
     return accountFixture;
   }
+
+  async restoreAccounts(): Promise<void> {}
 }

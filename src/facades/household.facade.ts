@@ -185,4 +185,15 @@ export class HouseholdFacade implements HouseholdInputPort {
 
     return { success: result };
   }
+
+  public async restoreInvitations(
+    payload: { invitations: IHouseholdInvitation[] },
+    { trace }: SystemOpts,
+  ): Promise<void> {
+    await this.busGateway.callServiceThroughtBus(
+      'household.restore-invitations',
+      { ...payload, trace },
+      30_000,
+    );
+  }
 }

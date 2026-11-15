@@ -53,4 +53,15 @@ export class NotificationsFacade implements NotificationsInputPort {
       INotification
     >('notification.deleteMessages', { ...payload, trace }, 1000);
   }
+
+  public async restoreNotifications(
+    payload: { notifications: INotification[] },
+    { trace }: SystemOpts,
+  ): Promise<void> {
+    await this.busGateway.callServiceThroughtBus(
+      'notification.restore',
+      { ...payload, trace },
+      30_000,
+    );
+  }
 }

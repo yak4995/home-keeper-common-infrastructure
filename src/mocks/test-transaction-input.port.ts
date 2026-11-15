@@ -44,4 +44,6 @@ export class TestTransactionInputPort implements TransactionInputPort {
   public async syncRate() {
     return { result: true };
   }
+
+  async restoreTransactions(): Promise<void> {}
 }

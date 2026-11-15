@@ -71,4 +71,6 @@ export class TestTransactionCategoryInputPort
   public async getByOwnerIds(): Promise<ITransactionCategory[]> {
     return [transactionCategoryFixture];
   }
+
+  async restoreCategories(): Promise<void> {}
 }

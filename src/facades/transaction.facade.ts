@@ -97,7 +97,7 @@ export class TransactionsFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ListResponse<ITransaction>
-    >('transactions.batch-create', { ...payload, trace }, 5000);
+    >('transactions.batch-create', { ...payload, trace }, 30_000);
   }
 
   public batchUpdateTransactions(
@@ -112,7 +112,7 @@ export class TransactionsFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ListResponse<ITransaction>
-    >('transactions.batch-update', { ...payload, trace }, 5000);
+    >('transactions.batch-update', { ...payload, trace }, 30_000);
   }
 
   public batchDeleteTransactions(
@@ -122,7 +122,7 @@ export class TransactionsFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ListResponse<ITransaction>
-    >('transactions.batch-delete', { ...payload, trace }, 5000);
+    >('transactions.batch-delete', { ...payload, trace }, 30_000);
   }
 
   public syncRate(
@@ -223,5 +223,16 @@ export class TransactionsFacade
       typeof payload & SystemOpts,
       IAnalyticComparisonDto
     >('transactions.change', { ...payload, trace }, 1000);
+  }
+
+  public async restoreTransactions(
+    payload: { transactions: ITransaction[] },
+    { trace }: SystemOpts,
+  ): Promise<void> {
+    await this.busGateway.callServiceThroughtBus(
+      'transactions.restore',
+      { ...payload, trace },
+      30_000,
+    );
   }
 }

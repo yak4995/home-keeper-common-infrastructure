@@ -75,7 +75,7 @@ export class BudgetFacade implements BudgetInputPort, BudgetAnalyticInputPort {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IBudget
-    >('budget.delete', { ...payload, trace }, 1000);
+    >('budget.delete', { ...payload, trace }, 30_000);
   }
 
   public getBudgetItems(
@@ -125,7 +125,7 @@ export class BudgetFacade implements BudgetInputPort, BudgetAnalyticInputPort {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IBudgetItem
-    >('budget.delete-item', { ...payload, trace }, 1000);
+    >('budget.delete-item', { ...payload, trace }, 30_000);
   }
 
   public getRatio(
@@ -156,5 +156,27 @@ export class BudgetFacade implements BudgetInputPort, BudgetAnalyticInputPort {
       typeof payload & SystemOpts,
       IBudget[]
     >('budget.getByOwnerIds', { ...payload, trace }, 1000);
+  }
+
+  public async restoreBudgets(
+    payload: { budgets: IBudget[] },
+    { trace }: SystemOpts,
+  ): Promise<void> {
+    await this.busGateway.callServiceThroughtBus(
+      'budget.restore',
+      { ...payload, trace },
+      30_000,
+    );
+  }
+
+  public async restoreBudgetItems(
+    payload: { items: IBudgetItem[] },
+    { trace }: SystemOpts,
+  ): Promise<void> {
+    await this.busGateway.callServiceThroughtBus(
+      'budget.restore-items',
+      { ...payload, trace },
+      30_000,
+    );
   }
 }

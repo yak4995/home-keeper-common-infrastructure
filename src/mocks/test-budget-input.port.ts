@@ -51,4 +51,8 @@ export class TestBudgetInputPort implements BudgetInputPort {
   public async getByOwnerIds(): Promise<IBudget[]> {
     return [budgetFixture];
   }
+
+  async restoreBudgets(): Promise<void> {}
+
+  async restoreBudgetItems(): Promise<void> {}
 }

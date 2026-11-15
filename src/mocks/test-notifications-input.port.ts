@@ -20,4 +20,6 @@ export class TestNotificationsInputPort implements NotificationsInputPort {
   async deleteMessages(): Promise<INotification[]> {
     return [];
   }
+
+  async restoreNotifications(): Promise<void> {}
 }

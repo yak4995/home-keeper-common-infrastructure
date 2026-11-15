@@ -79,6 +79,17 @@ export class AccountsFacade implements AccountInputPort {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IAccount
-    >('accounts.delete', { ...payload, trace }, 1000);
+    >('accounts.delete', { ...payload, trace }, 30_000);
+  }
+
+  public async restoreAccounts(
+    payload: { accounts: IAccount[] },
+    { trace }: SystemOpts,
+  ): Promise<void> {
+    await this.busGateway.callServiceThroughtBus(
+      'accounts.restore',
+      { ...payload, trace },
+      30_000,
+    );
   }
 }

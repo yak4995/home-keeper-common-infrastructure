@@ -83,7 +83,7 @@ export class UserFacade implements UserInputPort {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IUser
-    >('users.delete', { ...payload, trace }, 1000);
+    >('users.delete', { ...payload, trace }, 30_000);
   }
 
   public async syncState(

@@ -107,7 +107,7 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ITransactionCategory
-    >('transaction-category.delete', { ...payload, trace }, 1000);
+    >('transaction-category.delete', { ...payload, trace }, 30_000);
   }
 
   public getByIds(
@@ -128,5 +128,16 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
       typeof payload & SystemOpts,
       ITransactionCategory[]
     >('transaction-category.getByOwnerIds', { ...payload, trace }, 1000);
+  }
+
+  public async restoreCategories(
+    payload: { categories: ITransactionCategory[] },
+    { trace }: SystemOpts,
+  ): Promise<void> {
+    await this.busGateway.callServiceThroughtBus(
+      'transaction-category.restore',
+      { ...payload, trace },
+      30_000,
+    );
   }
 }

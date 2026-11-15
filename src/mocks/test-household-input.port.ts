@@ -64,4 +64,6 @@ export class TestHouseholdInputPort implements HouseholdInputPort {
   public async getInvitationsByUserIds(): Promise<never> {
     throw new Error('Method not implemented');
   }
+
+  async restoreInvitations(): Promise<void> {}
 }
