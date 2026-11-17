@@ -103,7 +103,23 @@ describe('buildProjectionForMicroOrm', () => {
         ],
         [],
       ),
-    ).toStrictEqual({ fields: [], populate: [] });
+    ).toStrictEqual({ fields: undefined, populate: [] });
+  });
+
+  it('loads all scalar fields when only an external relation is requested', () => {
+    expect(
+      buildProjectionForMicroOrm<IHousehold>({ members: 1 }, [], ['members']),
+    ).toStrictEqual({ fields: undefined, populate: [] });
+  });
+
+  it('preserves population when only a local relation is requested', () => {
+    expect(
+      buildProjectionForMicroOrm<IHousehold>(
+        { invitations: 1 },
+        ['invitations'],
+        [],
+      ),
+    ).toStrictEqual({ fields: undefined, populate: ['invitations'] });
   });
 
   it('all fields are set to 0 and no ones are in populate', () => {
@@ -120,7 +136,7 @@ describe('buildProjectionForMicroOrm', () => {
         [],
       ),
     ).toStrictEqual({
-      fields: [],
+      fields: undefined,
       populate: [
         'accounts',
         'budgets',
@@ -139,7 +155,7 @@ describe('buildProjectionForMicroOrm', () => {
         [],
       ),
     ).toStrictEqual({
-      fields: [],
+      fields: undefined,
       populate: ['invitations', 'members', 'transactionCategories'],
     });
   });
@@ -177,7 +193,7 @@ describe('buildProjectionForMicroOrm', () => {
         [],
       ),
     ).toStrictEqual({
-      fields: [],
+      fields: undefined,
       populate: ['budgets', 'invitations', 'members', 'transactionCategories'],
     });
   });
