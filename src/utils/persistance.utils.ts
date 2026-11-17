@@ -117,7 +117,7 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
   projection: ProjectionCriteria<T>,
   populatedFields: (keyof T)[],
   outsideFields: (keyof T)[],
-): { fields: (keyof T)[]; populate: (keyof T)[] } {
+): { fields: (keyof T)[] | undefined; populate: (keyof T)[] } {
   const exclusiveProjection = Object.values(projection).includes(0);
   const fields: (keyof T)[] = [];
   const populate: (keyof T)[] = exclusiveProjection ? [...populatedFields] : [];
@@ -132,7 +132,8 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
       }
     }
 
-    return { fields, populate };
+    // MikroORM 7 treats an empty fields array as a primary-key-only projection.
+    return { fields: undefined, populate };
   }
 
   for (const key in projection) {
@@ -153,5 +154,5 @@ export function buildProjectionForMicroOrm<T extends IPersistantEntity>(
     }
   }
 
-  return { fields, populate };
+  return { fields: fields.length ? fields : undefined, populate };
 }
