@@ -28,7 +28,7 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
   }
 
   public getTransactionCategoryDirectChildren(
-    payload: { ownerId?: ID } & IIdentificationDto,
+    payload: { ownerIds?: ID[] } & IIdentificationDto,
     { trace }: SystemOpts,
   ): Promise<ListResponse<ITransactionCategory>> {
     return this.busGateway.callServiceThroughtBus<
@@ -38,7 +38,7 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
   }
 
   public getTransactionCategoryAllChildren(
-    payload: { ownerId?: ID } & IIdentificationDto,
+    payload: { ownerIds?: ID[] } & IIdentificationDto,
     { trace }: SystemOpts,
   ): Promise<ListResponse<ITransactionCategory>> {
     return this.busGateway.callServiceThroughtBus<
@@ -48,7 +48,7 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
   }
 
   public list(
-    payload: { ownerId?: ID } & IProjectionDto<ITransactionCategory>,
+    payload: { ownerIds?: ID[] } & IProjectionDto<ITransactionCategory>,
     { trace }: SystemOpts,
   ): Promise<ListResponse<ITransactionCategory>> {
     return this.busGateway.callServiceThroughtBus<
@@ -59,7 +59,7 @@ export class TransactionCategoryFacade implements TransactionCategoryInputPort {
 
   public search(
     payload: {
-      ownerId?: ID;
+      ownerIds?: ID[];
       name?: string;
     } & IProjectionDto<ITransactionCategory>,
     { trace }: SystemOpts,
