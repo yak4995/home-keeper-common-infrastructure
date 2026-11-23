@@ -1,3 +1,6 @@
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { EntityLockContextInterceptor } from './interceptors/entity-lock-context.interceptor';
+import { EntityMutexLifecycle } from './services/entity-mutex.lifecycle';
 import { createRedisCacheOptions } from './services/redis-cache.options';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
@@ -34,6 +37,7 @@ const reexportedModules = [
 ];
 
 const exportedProviders = [
+  EntityMutexLifecycle,
   OutputStreamLoggerService,
   EnvConfigService,
   RedisCacheService,
@@ -110,7 +114,10 @@ const exportedProviders = [
 @Global()
 @Module({
   imports: [...reexportedModules],
-  providers: [...exportedProviders],
+  providers: [
+    ...exportedProviders,
+    { provide: APP_INTERCEPTOR, useClass: EntityLockContextInterceptor },
+  ],
   exports: [...reexportedModules, ...exportedProviders],
 })
 export class CommonModule {}

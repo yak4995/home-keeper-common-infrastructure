@@ -69,7 +69,7 @@ export class AccountsFacade implements AccountInputPort {
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       IAccount
-    >('accounts.update', { ...payload, trace }, 1000);
+    >('accounts.update', { ...payload, trace }, 30_000);
   }
 
   public deleteAccount(

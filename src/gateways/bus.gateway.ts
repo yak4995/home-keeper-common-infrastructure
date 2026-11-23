@@ -1,3 +1,4 @@
+import { getEntityLockTokens } from '../services/entity-mutex';
 import { camelCase } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
@@ -9,6 +10,22 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ICacheService, SystemOpts } from '@yak4995/home-keeper-core';
 
 import { TraceableError } from '../errors/traceable.error';
+
+// Attach trusted internal ownership metadata without changing ordinary RPC payloads.
+function attachEntityLocks<T extends object>(params: T): T {
+  const payload = { ...params } as T & {
+    __entityLocks?: Record<string, string>;
+  };
+  const tokens = getEntityLockTokens();
+
+  delete payload.__entityLocks;
+
+  if (Object.keys(tokens).length) {
+    payload.__entityLocks = tokens;
+  }
+
+  return payload;
+}
 
 @Injectable()
 export class BusGateway {
@@ -33,7 +50,9 @@ export class BusGateway {
     }
 
     try {
-      await lastValueFrom(clientInstance.emit(address, params));
+      await lastValueFrom(
+        clientInstance.emit(address, attachEntityLocks(params)),
+      );
 
       return { result: true };
     } catch (e) {
@@ -66,7 +85,7 @@ export class BusGateway {
     try {
       const response: TResult = await lastValueFrom(
         clientInstance
-          .send<TResult, TInput>(address, params)
+          .send<TResult, TInput>(address, attachEntityLocks(params))
           .pipe(timeout(timeoutInSeconds ?? BusGateway.DEFAULT_TIMEOUT)),
       );
 

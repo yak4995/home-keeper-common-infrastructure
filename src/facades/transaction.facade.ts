@@ -67,7 +67,7 @@ export class TransactionsFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ITransaction
-    >('transactions.create', { ...payload, trace }, 1000);
+    >('transactions.create', { ...payload, trace }, 30_000);
   }
 
   public updateTransaction(
@@ -77,7 +77,7 @@ export class TransactionsFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ITransaction
-    >('transactions.update', { ...payload, trace }, 1000);
+    >('transactions.update', { ...payload, trace }, 30_000);
   }
 
   public deleteTransaction(
@@ -87,7 +87,7 @@ export class TransactionsFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ITransaction
-    >('transactions.delete', { ...payload, trace }, 1000);
+    >('transactions.delete', { ...payload, trace }, 30_000);
   }
 
   public batchCreateTransactions(
