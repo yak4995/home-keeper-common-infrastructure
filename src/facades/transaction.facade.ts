@@ -97,7 +97,7 @@ export class TransactionsFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       ListResponse<ITransaction>
-    >('transactions.batch-create', { ...payload, trace }, 30_000);
+    >('transactions.batch-create', { ...payload, trace }, 120_000);
   }
 
   public batchUpdateTransactions(

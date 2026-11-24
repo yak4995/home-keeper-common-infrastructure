@@ -32,7 +32,7 @@ export class IntegrationFacade
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { rate: number }
-    >('integration.import-transactions', { ...payload, trace }, 5000);
+    >('integration.import-transactions', { ...payload, trace }, 180_000);
   }
 
   backup(payload: { userId: ID }, { trace }: SystemOpts): Promise<object> {
@@ -53,20 +53,10 @@ export class IntegrationFacade
     payload: { from: ID; to: ID; forDate: Date },
     { trace }: SystemOpts,
   ): Promise<{ rate: number }> {
-    const forDate = new Date(payload.forDate);
-    const year = forDate.getFullYear();
-    const month = String(forDate.getMonth() + 1).padStart(2, '0');
-    const day = String(forDate.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-
+    // A successful reply confirms that the rate was saved. Do not use an RPC error fallback.
     return this.busGateway.callServiceThroughtBus<
       typeof payload & SystemOpts,
       { rate: number }
-    >(
-      'integration.currency-rate',
-      { ...payload, trace },
-      1000,
-      `Rate_${payload.from}_${payload.to}_${formattedDate}`,
-    );
+    >('integration.currency-rate', { ...payload, trace }, 30_000);
   }
 }
