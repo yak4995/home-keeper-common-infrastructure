@@ -45,6 +45,7 @@ export * from './services/output-stream-logger.service';
 export * from './services/env-config.service';
 
 export * from './utils/cached-fetching.utils';
+export * from './utils/pagination.utils';
 export * from './utils/persistance.utils';
 
 export * from './services/entity-mutex';

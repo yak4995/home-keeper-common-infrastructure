@@ -57,7 +57,6 @@ export async function lockEntity(
   };
 }
 
-// Acquire the specified entity IDs in stable order; release acquired locks if a later acquisition fails.
 export async function lockEntities(
   entityName: string,
   ids: string[],
