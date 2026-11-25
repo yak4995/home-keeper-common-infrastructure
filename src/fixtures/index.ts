@@ -96,8 +96,9 @@ export const accountFixture = {
   name: 'test',
   currency: currencyFixture,
   initialBalance: 0,
+  balanceStartOn: new Date('2024-01-01'),
   owner: householdFixture,
-  iban: undefined,
+  cardNumber: undefined,
   bank: Bank.CASH,
 
   budgets: [],
